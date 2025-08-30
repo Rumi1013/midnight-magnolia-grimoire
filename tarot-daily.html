@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Tarot Reading - Midnight Magnolia Grimoire</title>
+    <meta name="description" content="Receive daily tarot guidance with personalized card readings, interpretations, and spiritual insights for your journey.">
+    <link rel="stylesheet" href="../css/grimoire.css">
+    <link rel="icon" href="../images/magnolia-flower.svg" type="image/svg+xml">
+</head>
+<body class="celestial-bg">
+    <!-- Navigation -->
+    <nav class="grimoire-nav">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="../index.html">
+                    <img src="../images/magnolia-flower.svg" alt="Magnolia Flower" class="nav-logo">
+                    <span class="nav-title">Midnight Magnolia</span>
+                    <span class="nav-subtitle">Digital Grimoire</span>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../pages/moon-phases.html">Moon Magic</a></li>
+                <li><a href="#tarot" class="active">Daily Tarot</a></li>
+                <li><a href="../pages/rituals-moon-water.html">Rituals</a></li>
+                <li><a href="../pages/herbs.html">Herbs</a></li>
+                <li><a href="../pages/crystals.html">Crystals</a></li>
+            </ul>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">Daily Tarot Guidance</h1>
+                <p class="hero-subtitle">
+                    Receive sacred wisdom and divine guidance through the ancient art of tarot.
+                    Allow the cards to illuminate your path and reveal hidden insights.
+                </p>
+                <div class="hero-actions">
+                    <button id="drawCard" class="btn btn--primary">Draw Your Card</button>
+                    <a href="#spreads" class="btn btn--secondary">Learn More</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tarot Reading Area -->
+    <section id="tarot" class="grimoire-section">
+        <div class="container">
+            <div id="readingArea" class="tarot-reading-area">
+                <!-- Card will be displayed here -->
+                <div id="cardContainer" class="card-container hidden">
+                    <div class="tarot-card-large magnolia-card">
+                        <div class="card-front">
+                            <div class="card-back-design">
+                                <div class="card-pattern"></div>
+                                <div class="card-symbol">🔮</div>
+                            </div>
+                        </div>
+                        <div class="card-reveal hidden">
+                            <div class="card-image">
+                                <div class="card-placeholder">🃏</div>
+                            </div>
+                            <div class="card-content">
+                                <h3 id="cardName" class="card-title">The Fool</h3>
+                                <p id="cardPosition" class="card-position">Upright</p>
+                                <div class="card-meaning">
+                                    <h4>Card Meaning:</h4>
+                                    <p id="cardDescription">New beginnings, innocence, spontaneity, and a free spirit. The Fool represents new journeys and taking risks without fear of the unknown.</p>
+                                </div>
+                                <div class="card-guidance">
+                                    <h4>Guidance for Today:</h4>
+                                    <p id="cardGuidance">Trust in the journey ahead. Embrace new opportunities with an open heart and childlike wonder. Sometimes the greatest adventures begin with a single step into the unknown.</p>
+                                </div>
+                                <div class="card-reflection">
+                                    <h4>Reflection Question:</h4>
+                                    <p id="cardQuestion">What new beginning is calling to you today?</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <button id="newReading" class="btn btn--secondary">Draw Another Card</button>
+                        <button id="saveReading" class="btn btn--ghost">Save Reading</button>
+                    </div>
+                </div>
+
+                <!-- Initial state -->
+                <div id="initialState" class="initial-reading-state">
+                    <div class="mystical-circle">
+                        <div class="circle-content">
+                            <div class="crystal-ball">🔮</div>
+                            <h3>Ready for Divine Guidance?</h3>
+                            <p>Take a moment to center yourself. Clear your mind and set an intention for what guidance you seek today.</p>
+                            <div class="intention-setting">
+                                <label for="intention">Your Intention (Optional):</label>
+                                <input type="text" id="intention" placeholder="What guidance do you seek?" class="intention-input">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tarot Spreads Section -->
+    <section id="spreads" class="grimoire-section celestial-bg">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Tarot Spreads & Techniques</h2>
+                <p class="section-subtitle">Explore different ways to receive guidance from the cards</p>
+            </div>
+
+            <div class="spreads-grid">
+                <div class="spread-card magnolia-card">
+                    <div class="spread-icon">🃏</div>
+                    <h3>Single Card</h3>
+                    <p>Perfect for daily guidance, quick insights, or focused questions. The simplicity allows for deep contemplation.</p>
+                    <ul class="spread-features">
+                        <li>Daily inspiration and guidance</li>
+                        <li>Quick answers to specific questions</li>
+                        <li>Meditation on a single concept</li>
+                        <li>Beginner-friendly approach</li>
+                    </ul>
+                    <button class="btn btn--primary btn--small">Try Single Card</button>
+                </div>
+
+                <div class="spread-card magnolia-card">
+                    <div class="spread-icon">📖</div>
+                    <h3>Three Card Spread</h3>
+                    <p>Explore past influences, present situation, and future possibilities for comprehensive understanding.</p>
+                    <ul class="spread-features">
+                        <li>Past, Present, Future insight</li>
+                        <li>Problem-solving guidance</li>
+                        <li>Relationship clarity</li>
+                        <li>Decision-making support</li>
+                    </ul>
+                    <a href="tarot-three-card.html" class="btn btn--primary btn--small">Try Three Card</a>
+                </div>
+
+                <div class="spread-card magnolia-card">
+                    <div class="spread-icon">⭐</div>
+                    <h3>Celtic Cross</h3>
+                    <p>The most comprehensive spread, offering detailed insights into complex situations and life patterns.</p>
+                    <ul class="spread-features">
+                        <li>Complete situation analysis</li>
+                        <li>Deep psychological insight</li>
+                        <li>Long-term guidance</li>
+                        <li>Advanced practitioners</li>
+                    </ul>
+                    <a href="tarot-celtic-cross.html" class="btn btn--primary btn--small">Try Celtic Cross</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tarot Basics Section -->
+    <section class="grimoire-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Tarot Fundamentals</h2>
+                <p class="section-subtitle">Understanding the language of the cards</p>
+            </div>
+
+            <div class="basics-grid">
+                <div class="basic-card magnolia-card">
+                    <h3>The Major Arcana</h3>
+                    <p>The 22 Major Arcana cards represent life's karmic and spiritual lessons. They deal with major life events and archetypal energies.</p>
+                    <div class="arcana-examples">
+                        <div class="arcana-item">
+                            <span class="arcana-number">0</span>
+                            <span class="arcana-name">The Fool</span>
+                        </div>
+                        <div class="arcana-item">
+                            <span class="arcana-number">I</span>
+                            <span class="arcana-name">The Magician</span>
+                        </div>
+                        <div class="arcana-item">
+                            <span class="arcana-number">II</span>
+                            <span class="arcana-name">The High Priestess</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="basic-card magnolia-card">
+                    <h3>The Minor Arcana</h3>
+                    <p>The 56 Minor Arcana cards represent day-to-day events and situations. Divided into four suits, they provide practical guidance.</p>
+                    <div class="suit-examples">
+                        <div class="suit-item">
+                            <span class="suit-symbol">⚔️</span>
+                            <span class="suit-name">Wands - Action & Creativity</span>
+                        </div>
+                        <div class="suit-item">
+                            <span class="suit-symbol">💰</span>
+                            <span class="suit-name">Pentacles - Material & Practical</span>
+                        </div>
+                        <div class="suit-item">
+                            <span class="suit-symbol">🗡️</span>
+                            <span class="suit-name">Swords - Thoughts & Communication</span>
+                        </div>
+                        <div class="suit-item">
+                            <span class="suit-symbol">🏆</span>
+                            <span class="suit-name">Cups - Emotions & Relationships</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="basic-card magnolia-card">
+                    <h3>Card Positions</h3>
+                    <p>Each position in a spread carries specific meaning. Understanding these positions helps interpret the cards' messages more accurately.</p>
+                    <div class="position-examples">
+                        <div class="position-item">
+                            <span class="position-type">Upright</span>
+                            <span class="position-desc">Natural, positive expression of the card's energy</span>
+                        </div>
+                        <div class="position-item">
+                            <span class="position-type">Reversed</span>
+                            <span class="position-desc">Blocked, internal, or challenging expression</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reading Tips Section -->
+    <section class="grimoire-section celestial-bg">
+        <div class="container">
+            <div class="tips-section">
+                <h2 class="section-title">Enhance Your Readings</h2>
+                <div class="tips-grid">
+                    <div class="tip-card magnolia-card">
+                        <div class="tip-icon">🧘</div>
+                        <h3>Prepare Your Space</h3>
+                        <p>Create a sacred space for your readings. Cleanse your cards, light a candle, and center yourself before beginning.</p>
+                    </div>
+                    <div class="tip-card magnolia-card">
+                        <div class="tip-icon">💭</div>
+                        <h3>Set Clear Intentions</h3>
+                        <p>Before drawing cards, take a moment to formulate your question clearly. The more specific you are, the clearer the guidance.</p>
+                    </div>
+                    <div class="tip-card magnolia-card">
+                        <div class="tip-icon">📝</div>
+                        <h3>Keep a Tarot Journal</h3>
+                        <p>Record your readings, interpretations, and how they manifest in your life. This helps you learn and grow as a reader.</p>
+                    </div>
+                    <div class="tip-card magnolia-card">
+                        <div class="tip-icon">🔄</div>
+                        <h3>Trust Your Intuition</h3>
+                        <p>The cards provide guidance, but your intuition provides the deepest wisdom. Learn to trust your inner knowing.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="grimoire-footer celestial-bg">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <img src="../images/magnolia-flower.svg" alt="Magnolia Flower" class="footer-logo">
+                    <h3>Midnight Magnolia</h3>
+                    <p>Digital Grimoire for the Modern Mystic</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-section">
+                        <h4>Divination</h4>
+                        <ul>
+                            <li><a href="#tarot">Daily Tarot</a></li>
+                            <li><a href="tarot-three-card.html">Three Card Spread</a></li>
+                            <li><a href="tarot-celtic-cross.html">Celtic Cross</a></li>
+                            <li><a href="../pages/moon-phases.html">Moon Magic</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-section">
+                        <h4>Natural Wisdom</h4>
+                        <ul>
+                            <li><a href="../pages/herbs.html">Herbal Magic</a></li>
+                            <li><a href="../pages/crystals.html">Crystal Healing</a></li>
+                            <li><a href="../pages/meditation.html">Meditation</a></li>
+                            <li><a href="../pages/astrology.html">Astrology</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-section">
+                        <h4>Community</h4>
+                        <ul>
+                            <li><a href="../pages/circles.html">Moon Circles</a></li>
+                            <li><a href="../pages/resources.html">Resources</a></li>
+                            <li><a href="../pages/about.html">About</a></li>
+                            <li><a href="../pages/contact.html">Contact</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Midnight Magnolia. Crafted with love and intention. All rights reserved.</p>
+                <div class="footer-social">
+                    <a href="#" aria-label="Instagram">📷</a>
+                    <a href="#" aria-label="Twitter">🐦</a>
+                    <a href="#" aria-label="YouTube">📺</a>
+                    <a href="#" aria-label="Email">✉️</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/grimoire.js"></script>
+    <script src="../js/tarot.js"></script>
+</body>
+</html>
