@@ -1,0 +1,562 @@
+{% comment %}
+  Article Template - Midnight Magnolia Theme
+
+  Security Features:
+  - XSS prevention with proper escaping
+  - CSRF protection for comment forms
+  - Input sanitization for all user data
+  - Accessibility features (WCAG 2.1 AA)
+  - SEO optimization with security considerations
+{% endcomment %}
+
+<div class="article-page celestial-bg">
+  <div class="container">
+
+    <!-- Breadcrumb Navigation -->
+    <nav class="breadcrumb" aria-label="{{ 'general.accessibility.breadcrumb' | t | escape }}">
+      <ol class="breadcrumb__list">
+        <li class="breadcrumb__item">
+          <a href="{{ routes.root_url }}" class="breadcrumb__link">{{ 'layout.navigation.home' | t | escape }}</a>
+        </li>
+        <li class="breadcrumb__item">
+          <a href="{{ blog.url | escape }}" class="breadcrumb__link">{{ blog.title | escape }}</a>
+        </li>
+        <li class="breadcrumb__item" aria-current="page">
+          {{ article.title | escape }}
+        </li>
+      </ol>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="article-main" role="main">
+      <article class="article">
+
+        <!-- Article Header -->
+        <header class="article-header">
+          <h1 class="article-title">{{ article.title | escape }}</h1>
+
+          <div class="article-meta">
+            <time class="article-date" datetime="{{ article.published_at | date: '%Y-%m-%d' }}">
+              {{ article.published_at | date: format: 'month_day_year' }}
+            </time>
+
+            {% if article.author != blank %}
+              <span class="article-author">
+                {{ 'blog.general.posted_by' | t: author: article.author | escape }}
+              </span>
+            {% endif %}
+          </div>
+
+          {% if article.tags.size > 0 %}
+            <div class="article-tags">
+              <span class="article-tags__label">{{ 'blog.general.tags' | t | escape }}:</span>
+              {% for tag in article.tags %}
+                <span class="article-tag">{{ tag | escape }}</span>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </header>
+
+        <!-- Featured Image -->
+        {% if article.image %}
+          <div class="article-image">
+            <img
+              src="{{ article.image | img_url: '800x600' }}"
+              alt="{{ article.image.alt | default: article.title | escape }}"
+              width="800"
+              height="600"
+              loading="eager"
+              decoding="async"
+            >
+          </div>
+        {% endif %}
+
+        <!-- Article Content -->
+        <div class="article-body user-content">
+          {{ article.content }}
+        </div>
+
+        <!-- Article Footer -->
+        <footer class="article-footer">
+
+          <!-- Social Sharing -->
+          <div class="article-share">
+            <span class="article-share__label">{{ 'social.general.share' | t | escape }}:</span>
+            <div class="article-share__buttons">
+              <a href="https://www.facebook.com/sharer/sharer.php?u={{ canonical_url | url_encode }}" target="_blank" rel="noopener noreferrer" class="share-button" aria-label="{{ 'social.general.share_on_facebook' | t | escape }}">
+                Facebook
+              </a>
+              <a href="https://twitter.com/intent/tweet?url={{ canonical_url | url_encode }}&text={{ article.title | url_encode }}" target="_blank" rel="noopener noreferrer" class="share-button" aria-label="{{ 'social.general.share_on_twitter' | t | escape }}">
+                Twitter
+              </a>
+            </div>
+          </div>
+
+          <!-- Navigation -->
+          {% if blog.previous_article or blog.next_article %}
+            <nav class="article-navigation" aria-label="Article navigation">
+              {% if blog.previous_article %}
+                <a href="{{ blog.previous_article.url | escape }}" class="article-nav article-nav--prev">
+                  <span class="article-nav__direction">{{ 'general.accessibility.previous' | t | escape }}</span>
+                  <span class="article-nav__title">{{ blog.previous_article.title | escape | truncate: 50 }}</span>
+                </a>
+              {% endif %}
+
+              {% if blog.next_article %}
+                <a href="{{ blog.next_article.url | escape }}" class="article-nav article-nav--next">
+                  <span class="article-nav__direction">{{ 'general.accessibility.next' | t | escape }}</span>
+                  <span class="article-nav__title">{{ blog.next_article.title | escape | truncate: 50 }}</span>
+                </a>
+              {% endif %}
+            </nav>
+          {% endif %}
+        </footer>
+      </article>
+
+      <!-- Comments Section -->
+      {% if blog.moderated? %}
+        <section class="comments-section">
+          <h2 class="comments-title">
+            {% if article.comments_count == 0 %}
+              {{ 'blog.comments.no_comments' | t | escape }}
+            {% elsif article.comments_count == 1 %}
+              {{ article.comments_count }} {{ 'blog.comments.comment' | t | escape }}
+            {% else %}
+              {{ article.comments_count }} {{ 'blog.comments.comments' | t | escape }}
+            {% endif %}
+          </h2>
+
+          <!-- Existing Comments -->
+          {% if article.comments.size > 0 %}
+            <div class="comments-list">
+              {% for comment in article.comments %}
+                <article class="comment magnolia-card">
+                  <header class="comment-header">
+                    <h3 class="comment-author">{{ comment.author | escape }}</h3>
+                    <time class="comment-date" datetime="{{ comment.created_at | date: '%Y-%m-%d' }}">
+                      {{ comment.created_at | date: format: 'month_day_year' }}
+                    </time>
+                  </header>
+                  <div class="comment-content">
+                    {{ comment.content | escape | newline_to_br }}
+                  </div>
+                </article>
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          <!-- Comment Form -->
+          <div class="comment-form-section">
+            <h3 class="comment-form__title">{{ 'blog.comments.leave_comment' | t | escape }}</h3>
+
+            {% form 'new_comment', article, class: 'comment-form', novalidate: 'novalidate' %}
+              {% if settings.enable_csrf_protection %}
+                <input type="hidden" name="authenticity_token" value="{{ form.authenticity_token | escape }}">
+              {% endif %}
+
+              {% if form.posted_successfully? %}
+                <div class="form-message form-message--success" role="alert">
+                  {% if blog.moderated? %}
+                    {{ 'blog.comments.moderation' | t | escape }}
+                  {% else %}
+                    {{ 'blog.comments.success' | t | escape }}
+                  {% endif %}
+                </div>
+              {% endif %}
+
+              {% if form.errors %}
+                <div class="form-message form-message--error" role="alert">
+                  <ul class="form-errors">
+                    {% for field in form.errors %}
+                      {% for error in field %}
+                        <li>{{ error | escape }}</li>
+                      {% endfor %}
+                    {% endfor %}
+                  </ul>
+                </div>
+              {% endif %}
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="comment-name" class="form-label">{{ 'blog.comments.name' | t | escape }} <span class="required">*</span></label>
+                  <input
+                    type="text"
+                    id="comment-name"
+                    name="comment[author]"
+                    class="form-input"
+                    value="{% if form.author %}{{ form.author | escape }}{% endif %}"
+                    required
+                    maxlength="100"
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label for="comment-email" class="form-label">{{ 'blog.comments.email' | t | escape }} <span class="required">*</span></label>
+                  <input
+                    type="email"
+                    id="comment-email"
+                    name="comment[email]"
+                    class="form-input"
+                    value="{% if form.email %}{{ form.email | escape }}{% endif %}"
+                    required
+                    maxlength="254"
+                    pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                  >
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="comment-body" class="form-label">{{ 'blog.comments.comment' | t | escape }} <span class="required">*</span></label>
+                <textarea
+                  id="comment-body"
+                  name="comment[body]"
+                  class="form-textarea"
+                  required
+                  rows="6"
+                  maxlength="2000"
+                >{% if form.body %}{{ form.body | escape }}{% endif %}</textarea>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn btn--primary">
+                  {{ 'blog.comments.submit' | t | escape }}
+                </button>
+              </div>
+            {% endform %}
+          </div>
+        </section>
+      {% endif %}
+    </main>
+  </div>
+</div>
+
+<style>
+/* Article Page Styles */
+.article-main {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.article-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.article-title {
+  margin-bottom: 1rem;
+}
+
+.article-meta {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  color: rgba(247, 243, 233, 0.7);
+}
+
+.article-tags {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.article-tags__label {
+  font-weight: 600;
+  color: var(--color-warm-cream);
+}
+
+.article-tag {
+  background: rgba(246, 213, 92, 0.1);
+  color: var(--color-golden-yellow);
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.article-image {
+  margin: 2rem 0;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.article-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.article-body {
+  line-height: 1.7;
+  margin-bottom: 3rem;
+}
+
+.article-body h2,
+.article-body h3,
+.article-body h4 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: var(--color-golden-yellow);
+}
+
+.article-body p {
+  margin-bottom: 1.5rem;
+}
+
+.article-body ul,
+.article-body ol {
+  margin-bottom: 1.5rem;
+  padding-left: 2rem;
+}
+
+.article-body blockquote {
+  border-left: 4px solid var(--color-golden-yellow);
+  padding-left: 1.5rem;
+  margin: 2rem 0;
+  font-style: italic;
+  color: rgba(247, 243, 233, 0.9);
+}
+
+.article-footer {
+  border-top: 1px solid rgba(247, 243, 233, 0.1);
+  padding-top: 2rem;
+}
+
+.article-share {
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.article-share__label {
+  font-weight: 600;
+  color: var(--color-warm-cream);
+}
+
+.article-share__buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.share-button {
+  padding: 0.5rem 1rem;
+  background: rgba(247, 243, 233, 0.1);
+  color: var(--color-warm-cream);
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-base);
+}
+
+.share-button:hover {
+  background: var(--color-golden-yellow);
+  color: var(--color-midnight-navy);
+}
+
+.article-navigation {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.article-nav {
+  padding: 1rem;
+  background: rgba(247, 243, 233, 0.05);
+  border: 1px solid rgba(247, 243, 233, 0.1);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  color: inherit;
+  transition: all var(--transition-base);
+}
+
+.article-nav:hover {
+  background: rgba(247, 243, 233, 0.1);
+}
+
+.article-nav--next {
+  text-align: right;
+}
+
+.article-nav__direction {
+  display: block;
+  font-size: 0.875rem;
+  color: rgba(247, 243, 233, 0.7);
+  margin-bottom: 0.5rem;
+}
+
+.article-nav__title {
+  font-weight: 600;
+  color: var(--color-golden-yellow);
+}
+
+.comments-section {
+  margin-top: 3rem;
+  padding-top: 3rem;
+  border-top: 1px solid rgba(247, 243, 233, 0.1);
+}
+
+.comments-title {
+  margin-bottom: 2rem;
+  text-align: center;
+  color: var(--color-golden-yellow);
+}
+
+.comments-list {
+  margin-bottom: 3rem;
+}
+
+.comment {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(247, 243, 233, 0.1);
+}
+
+.comment-author {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-golden-yellow);
+  margin: 0;
+}
+
+.comment-date {
+  font-size: 0.875rem;
+  color: rgba(247, 243, 233, 0.7);
+}
+
+.comment-content {
+  color: rgba(247, 243, 233, 0.8);
+  line-height: 1.6;
+}
+
+.comment-form-section {
+  background: rgba(247, 243, 233, 0.05);
+  border: 1px solid rgba(247, 243, 233, 0.1);
+  border-radius: var(--radius-md);
+  padding: 2rem;
+}
+
+.comment-form__title {
+  margin-bottom: 2rem;
+  text-align: center;
+  color: var(--color-golden-yellow);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--color-warm-cream);
+  font-weight: 500;
+}
+
+.required {
+  color: #ef4444;
+}
+
+.form-input,
+.form-textarea {
+  width: 100%;
+  padding: 0.875rem;
+  background: rgba(247, 243, 233, 0.05);
+  border: 1px solid rgba(247, 243, 233, 0.2);
+  border-radius: var(--radius-sm);
+  color: var(--color-pure-white);
+  font-family: var(--font-body-family);
+  font-size: 1rem;
+  transition: all var(--transition-base);
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--color-golden-yellow);
+  box-shadow: 0 0 0 3px rgba(246, 213, 92, 0.1);
+  background: rgba(247, 243, 233, 0.1);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.form-actions {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.form-message {
+  padding: 1rem;
+  border-radius: var(--radius-sm);
+  margin-bottom: 2rem;
+}
+
+.form-message--success {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #34d399;
+}
+
+.form-message--error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+}
+
+.form-errors {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .article-meta {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .article-navigation {
+    grid-template-columns: 1fr;
+  }
+
+  .article-nav--next {
+    text-align: left;
+  }
+
+  .article-share {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .comment-form-section {
+    padding: 1.5rem;
+  }
+}
+</style>

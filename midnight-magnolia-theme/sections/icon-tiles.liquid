@@ -1,0 +1,112 @@
+{% comment %}
+  Icon Tiles — Midnight Magnolia
+  - Six gentle category tiles with inline SVGs or custom images
+  - Accessible, keyboard-friendly, reduced-motion aware
+{% endcomment %}
+
+<section class="icon-tiles section" data-section-id="{{ section.id }}" aria-label="Shop categories">
+  <div class="container">
+    {% if section.settings.heading != blank %}
+      <h2 class="section__title">{{ section.settings.heading | escape }}</h2>
+    {% endif %}
+
+    <div class="icon-tiles__grid">
+      {% for block in section.blocks %}
+        {% assign href = block.settings.link | default: '#' %}
+        <article class="icon-tile magnolia-card" {{ block.shopify_attributes }}>
+          <a class="icon-tile__link" href="{{ href }}">
+            <div class="icon-tile__icon" aria-hidden="true">
+              {% if block.settings.custom_image %}
+                <img src="{{ block.settings.custom_image | img_url: '200x200' }}" alt="" loading="lazy" decoding="async" width="100" height="100">
+              {% else %}
+                {% case block.settings.icon %}
+                  {% when 'magnolia' %}
+                    <svg viewBox="0 0 64 64" width="64" height="64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M32 8c6 8 12 10 12 18s-6 14-12 14-12-6-12-14 6-10 12-18Z" stroke="currentColor" stroke-width="2"/>
+                      <path d="M12 28c8 2 12-2 20-2s12 4 20 2c-2 10-10 18-20 18S14 38 12 28Z" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                  {% when 'moon' %}
+                    <svg viewBox="0 0 64 64" width="64" height="64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M44 10a22 22 0 1 0 0 44 22 22 0 0 1-10-42 22 22 0 0 0 10-2Z" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                  {% when 'key' %}
+                    <svg viewBox="0 0 64 64" width="64" height="64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="22" cy="22" r="10" stroke="currentColor" stroke-width="2"/>
+                      <path d="M32 22h20l-4 6h-6l-2 4" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                  {% when 'ironwork' %}
+                    <svg viewBox="0 0 64 64" width="64" height="64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 52c16-8 24-32 40-40M20 20h8m8 8h8m-16 8h8" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                  {% when 'star' %}
+                    <svg viewBox="0 0 64 64" width="64" height="64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M32 8l6 14 16 2-12 10 4 16-14-8-14 8 4-16L10 24l16-2 6-14Z" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                  {% else %}
+                    <svg viewBox="0 0 64 64" width="64" height="64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="32" cy="32" r="20" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                {% endcase %}
+              {% endif %}
+            </div>
+            <div class="icon-tile__content">
+              {% if block.settings.title != blank %}
+                <h3 class="icon-tile__title">{{ block.settings.title | escape }}</h3>
+              {% endif %}
+              {% if block.settings.description != blank %}
+                <p class="icon-tile__desc">{{ block.settings.description | escape }}</p>
+              {% endif %}
+            </div>
+          </a>
+        </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<style>
+  .icon-tiles__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-xl); }
+  .icon-tile { text-align: center; transition: transform var(--transition-base); }
+  .icon-tile__link { display: grid; gap: var(--space-md); text-decoration: none; color: inherit; align-content: start; }
+  .icon-tile__icon { color: var(--color-golden-yellow); display: grid; place-items: center; }
+  .icon-tile__icon svg, .icon-tile__icon img { width: 64px; height: 64px; }
+  .icon-tile__title { font-size: 1.1rem; margin: 0; }
+  .icon-tile__desc { color: var(--color-warm-cream); opacity: .9; }
+  .icon-tile:hover { transform: translateY(-4px); }
+  @media (prefers-reduced-motion: reduce) { .icon-tile:hover { transform: none; } }
+  {% if settings.enable_motion_toggle == false or settings.reduce_motion_default %}
+    .icon-tile:hover { transform: none !important; }
+  {% endif %}
+</style>
+
+{% schema %}
+{
+  "name": "Icon tiles",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Explore the Garden" }
+  ],
+  "blocks": [
+    { "type": "tile", "name": "Tile", "settings": [
+      { "type": "select", "id": "icon", "label": "Icon", "default": "magnolia", "options": [
+        {"value":"magnolia","label":"Magnolia"}, {"value":"moon","label":"Moon"}, {"value":"key","label":"Key"}, {"value":"ironwork","label":"Ironwork"}, {"value":"star","label":"Star"}, {"value":"circle","label":"Circle"}
+      ]},
+      { "type": "image_picker", "id": "custom_image", "label": "Custom image (overrides icon)" },
+      { "type": "text", "id": "title", "label": "Title", "default": "Artwork" },
+      { "type": "textarea", "id": "description", "label": "Description" },
+      { "type": "url", "id": "link", "label": "Link" }
+    ]}
+  ],
+  "max_blocks": 6,
+  "presets": [
+    { "name": "Icon tiles", "category": "Image", "blocks": [
+      {"type":"tile","settings":{"icon":"magnolia","title":"Artwork"}},
+      {"type":"tile","settings":{"icon":"moon","title":"Digital"}},
+      {"type":"tile","settings":{"icon":"key","title":"Apparel"}},
+      {"type":"tile","settings":{"icon":"ironwork","title":"Journals & Stationery"}},
+      {"type":"tile","settings":{"icon":"star","title":"Pet"}},
+      {"type":"tile","settings":{"icon":"circle","title":"Home & Decor"}}
+    ]}
+  ]
+}
+{% endschema %}
+

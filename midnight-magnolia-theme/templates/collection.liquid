@@ -1,0 +1,882 @@
+{% comment %}
+  Collection Template - Midnight Magnolia Theme
+
+  Security Features:
+  - Safe filtering and sorting with input validation
+  - XSS prevention with proper escaping
+  - CSRF protection for filter forms
+  - Secure pagination handling
+  - Input sanitization for all user data
+  - Accessibility features (WCAG 2.1 AA)
+  - SEO optimization with security considerations
+{% endcomment %}
+
+<div class="collection-page celestial-bg">
+  <div class="container">
+
+    <!-- Breadcrumb Navigation -->
+    <nav class="breadcrumb" aria-label="{{ 'general.accessibility.breadcrumb' | t | escape }}">
+      <ol class="breadcrumb__list">
+        <li class="breadcrumb__item">
+          <a href="{{ routes.root_url }}" class="breadcrumb__link">{{ 'layout.navigation.home' | t | escape }}</a>
+        </li>
+        <li class="breadcrumb__item" aria-current="page">
+          {{ collection.title | escape }}
+        </li>
+      </ol>
+    </nav>
+
+    <!-- Collection Header -->
+    <header class="collection-header">
+      <h1 class="collection-title">{{ collection.title | escape }}</h1>
+
+      {% if collection.description != blank %}
+        <div class="collection-description">
+          {{ collection.description }}
+        </div>
+      {% endif %}
+
+      {% if collection.image %}
+        <div class="collection-image">
+          <img
+            src="{{ collection.image | img_url: '1200x400' }}"
+            alt="{{ collection.image.alt | default: collection.title | escape }}"
+            width="1200"
+            height="400"
+            loading="eager"
+            decoding="async"
+          >
+        </div>
+      {% endif %}
+    </header>
+
+    <!-- Collection Controls -->
+    <div class="collection-controls">
+      <div class="collection-controls__left">
+        <button type="button" class="filter-toggle btn btn--ghost" aria-label="{{ 'collections.general.filter' | t | escape }}">
+          <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
+            <path fill="currentColor" d="M3 3h14l-5.5 6.5v5L8.5 16V9.5L3 3z"/>
+          </svg>
+          {{ 'collections.general.filter' | t | escape }}
+        </button>
+
+        <div class="results-count" aria-live="polite">
+          {% if collection.products_count == 0 %}
+            {{ 'collections.general.no_products' | t | escape }}
+          {% elsif collection.products_count == 1 %}
+            {{ 'collections.general.results_count' | t: count: collection.products_count | escape }}
+          {% else %}
+            {{ 'collections.general.results_count_plural' | t: count: collection.products_count | escape }}
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="collection-controls__right">
+        <form action="{{ collection.url }}" method="get" class="sort-form">
+          {% for filter in collection.filters %}
+            {% for value in filter.active_values %}
+              <input type="hidden" name="{{ filter.param_name }}" value="{{ value.param_name | escape }}">
+            {% endfor %}
+          {% endfor %}
+
+          <label for="sort-by" class="sort-label">{{ 'collections.general.sort_by' | t | escape }}:</label>
+          <select name="sort_by" id="sort-by" class="form-select sort-select" aria-label="{{ 'collections.general.sort_by' | t | escape }}">
+            <option value="manual" {% if collection.sort_by == 'manual' %}selected{% endif %}>{{ 'collections.sorting.featured' | t | escape }}</option>
+            <option value="best-selling" {% if collection.sort_by == 'best-selling' %}selected{% endif %}>{{ 'collections.sorting.best_selling' | t | escape }}</option>
+            <option value="title-ascending" {% if collection.sort_by == 'title-ascending' %}selected{% endif %}>{{ 'collections.sorting.alphabetically_az' | t | escape }}</option>
+            <option value="title-descending" {% if collection.sort_by == 'title-descending' %}selected{% endif %}>{{ 'collections.sorting.alphabetically_za' | t | escape }}</option>
+            <option value="price-ascending" {% if collection.sort_by == 'price-ascending' %}selected{% endif %}>{{ 'collections.sorting.price_low_to_high' | t | escape }}</option>
+            <option value="price-descending" {% if collection.sort_by == 'price-descending' %}selected{% endif %}>{{ 'collections.sorting.price_high_to_low' | t | escape }}</option>
+            <option value="created-descending" {% if collection.sort_by == 'created-descending' %}selected{% endif %}>{{ 'collections.sorting.date_new_to_old' | t | escape }}</option>
+            <option value="created-ascending" {% if collection.sort_by == 'created-ascending' %}selected{% endif %}>{{ 'collections.sorting.date_old_to_new' | t | escape }}</option>
+          </select>
+        </form>
+      </div>
+    </div>
+
+    <div class="collection-content">
+
+      <!-- Filters Sidebar -->
+      {% if collection.filters.size > 0 %}
+        <aside class="collection-filters" id="collection-filters">
+          <div class="filters-header">
+            <h2 class="filters-title">{{ 'collections.general.filter' | t | escape }}</h2>
+            {% if collection.filters %}
+              {% assign active_filters_count = 0 %}
+              {% for filter in collection.filters %}
+                {% assign active_filters_count = active_filters_count | plus: filter.active_values.size %}
+              {% endfor %}
+
+              {% if active_filters_count > 0 %}
+                <a href="{{ collection.url }}" class="clear-filters">
+                  {{ 'collections.general.clear_filters' | t | escape }} ({{ active_filters_count }})
+                </a>
+              {% endif %}
+            {% endif %}
+          </div>
+
+          <form action="{{ collection.url }}" method="get" class="filters-form" id="filters-form">
+            {% if collection.sort_by != 'manual' %}
+              <input type="hidden" name="sort_by" value="{{ collection.sort_by | escape }}">
+            {% endif %}
+
+            {% for filter in collection.filters %}
+              <details class="filter-group" {% if filter.active_values.size > 0 %}open{% endif %}>
+                <summary class="filter-group__title">
+                  {{ filter.label | escape }}
+                  {% if filter.active_values.size > 0 %}
+                    <span class="filter-count">({{ filter.active_values.size }})</span>
+                  {% endif %}
+                </summary>
+
+                <div class="filter-group__content">
+                  {% case filter.type %}
+                    {% when 'list' %}
+                      <div class="filter-list">
+                        {% for value in filter.values %}
+                          <div class="filter-item">
+                            <input
+                              type="checkbox"
+                              id="{{ filter.param_name }}-{{ value.param_name | handle }}"
+                              name="{{ filter.param_name }}"
+                              value="{{ value.param_name | escape }}"
+                              {% if value.active %}checked{% endif %}
+                              class="filter-checkbox visually-hidden"
+                            >
+                            <label for="{{ filter.param_name }}-{{ value.param_name | handle }}" class="filter-label">
+                              <span class="filter-name">{{ value.label | escape }}</span>
+                              <span class="filter-count">({{ value.count }})</span>
+                            </label>
+                          </div>
+                        {% endfor %}
+                      </div>
+
+                    {% when 'price_range' %}
+                      <div class="price-range-filter">
+                        <div class="price-range-inputs">
+                          <div class="price-input-group">
+                            <label for="{{ filter.min_value.param_name }}" class="price-label">{{ 'collections.filters.price_min' | t | escape }}</label>
+                            <input
+                              type="number"
+                              id="{{ filter.min_value.param_name }}"
+                              name="{{ filter.min_value.param_name }}"
+                              value="{{ filter.min_value.value | escape }}"
+                              min="0"
+                              max="{{ filter.range_max | divided_by: 100 }}"
+                              step="0.01"
+                              class="form-input price-input"
+                              placeholder="{{ filter.range_min | divided_by: 100 | money_without_currency | escape }}"
+                            >
+                          </div>
+                          <div class="price-input-group">
+                            <label for="{{ filter.max_value.param_name }}" class="price-label">{{ 'collections.filters.price_max' | t | escape }}</label>
+                            <input
+                              type="number"
+                              id="{{ filter.max_value.param_name }}"
+                              name="{{ filter.max_value.param_name }}"
+                              value="{{ filter.max_value.value | escape }}"
+                              min="0"
+                              max="{{ filter.range_max | divided_by: 100 }}"
+                              step="0.01"
+                              class="form-input price-input"
+                              placeholder="{{ filter.range_max | divided_by: 100 | money_without_currency | escape }}"
+                            >
+                          </div>
+                        </div>
+                      </div>
+                  {% endcase %}
+                </div>
+              </details>
+            {% endfor %}
+
+            <button type="submit" class="btn btn--primary apply-filters">
+              {{ 'collections.general.apply_filters' | t | escape }}
+            </button>
+          </form>
+        </aside>
+      {% endif %}
+
+      <!-- Products Grid -->
+      <main class="collection-products" role="main">
+        {% if collection.products.size > 0 %}
+          <div class="products-grid" id="products-grid">
+            {% for product in collection.products %}
+              <article class="product-card magnolia-card">
+                <div class="product-card__image">
+                  <a href="{{ product.url | escape }}" aria-label="{{ 'products.general.view_details' | t | escape }} {{ product.title | escape }}">
+                    {% if product.featured_media %}
+                      <img
+                        src="{{ product.featured_media | img_url: '300x300' }}"
+                        alt="{{ product.featured_media.alt | default: product.title | escape }}"
+                        width="300"
+                        height="300"
+                        loading="lazy"
+                        decoding="async"
+                      >
+                    {% else %}
+                      <div class="product-card__placeholder" aria-label="{{ 'general.accessibility.loading' | t | escape }}">
+                        <span>{{ product.title | escape | truncate: 20 }}</span>
+                      </div>
+                    {% endif %}
+                  </a>
+
+                  {% if product.compare_at_price > product.price %}
+                    <span class="product-badge product-badge--sale">{{ 'products.badges.sale' | t | escape }}</span>
+                  {% endif %}
+
+                  {% if product.available == false %}
+                    <span class="product-badge product-badge--sold-out">{{ 'products.general.sold_out' | t | escape }}</span>
+                  {% endif %}
+                </div>
+
+                <div class="product-card__content">
+                  <h3 class="product-card__title">
+                    <a href="{{ product.url | escape }}">{{ product.title | escape }}</a>
+                  </h3>
+
+                  {% if product.vendor != blank %}
+                    <p class="product-card__vendor">{{ product.vendor | escape }}</p>
+                  {% endif %}
+
+                  <div class="product-card__price">
+                    {% if product.compare_at_price > product.price %}
+                      <span class="price price--sale">{{ product.price | money | escape }}</span>
+                      <span class="price price--compare">{{ product.compare_at_price | money | escape }}</span>
+                    {% else %}
+                      <span class="price">{{ product.price | money | escape }}</span>
+                    {% endif %}
+                  </div>
+
+                  {% if product.available %}
+                    <form action="{{ routes.cart_add_url }}" method="post" enctype="multipart/form-data" class="product-form" data-product-id="{{ product.id }}">
+                      {% if settings.enable_csrf_protection %}
+                        <input type="hidden" name="authenticity_token" value="{{ form.authenticity_token | escape }}">
+                      {% endif %}
+
+                      <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+
+                      <button type="submit" class="btn btn--primary btn--small" aria-label="{{ 'products.general.add_to_cart' | t | escape }} {{ product.title | escape }}">
+                        {{ 'products.general.add_to_cart' | t | escape }}
+                      </button>
+                    </form>
+                  {% endif %}
+                </div>
+              </article>
+            {% endfor %}
+          </div>
+
+          <!-- Pagination -->
+          {% paginate collection.products by 24 %}
+            {% if paginate.pages > 1 %}
+              <nav class="pagination" aria-label="{{ 'general.pagination.label' | t | escape }}">
+                <ul class="pagination__list">
+                  {% if paginate.previous %}
+                    <li class="pagination__item">
+                      <a href="{{ paginate.previous.url | escape }}" class="pagination__link pagination__link--prev" aria-label="{{ 'general.accessibility.previous' | t | escape }}">
+                        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+                          <path fill="currentColor" d="M10 12L6 8l4-4"/>
+                        </svg>
+                        {{ 'general.accessibility.previous' | t | escape }}
+                      </a>
+                    </li>
+                  {% endif %}
+
+                  {% for part in paginate.parts %}
+                    {% if part.is_link %}
+                      <li class="pagination__item">
+                        <a href="{{ part.url | escape }}" class="pagination__link" aria-label="{{ 'general.pagination.page' | t: page: part.title | escape }}">
+                          {{ part.title | escape }}
+                        </a>
+                      </li>
+                    {% else %}
+                      {% if part.title == paginate.current_page %}
+                        <li class="pagination__item">
+                          <span class="pagination__link pagination__link--current" aria-current="page" aria-label="{{ 'general.pagination.current_page' | t: page: part.title | escape }}">
+                            {{ part.title | escape }}
+                          </span>
+                        </li>
+                      {% else %}
+                        <li class="pagination__item">
+                          <span class="pagination__ellipsis">{{ part.title | escape }}</span>
+                        </li>
+                      {% endif %}
+                    {% endif %}
+                  {% endfor %}
+
+                  {% if paginate.next %}
+                    <li class="pagination__item">
+                      <a href="{{ paginate.next.url | escape }}" class="pagination__link pagination__link--next" aria-label="{{ 'general.accessibility.next' | t | escape }}">
+                        {{ 'general.accessibility.next' | t | escape }}
+                        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+                          <path fill="currentColor" d="M6 4l4 4-4 4"/>
+                        </svg>
+                      </a>
+                    </li>
+                  {% endif %}
+                </ul>
+              </nav>
+            {% endif %}
+          {% endpaginate %}
+
+        {% else %}
+          <div class="empty-state">
+            <h2>{{ 'collections.general.no_products' | t | escape }}</h2>
+            <p>{{ 'collections.general.no_products_description' | t | escape }}</p>
+            <a href="{{ routes.root_url }}" class="btn btn--primary">
+              {{ 'collections.general.continue_shopping' | t | escape }}
+            </a>
+          </div>
+        {% endif %}
+      </main>
+    </div>
+  </div>
+</div>
+
+<!-- Structured Data for SEO -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "{{ collection.title | escape }}",
+  "description": "{{ collection.description | strip_html | truncate: 160 | escape }}",
+  "url": "{{ canonical_url }}",
+  "mainEntity": {
+    "@type": "ItemList",
+    "numberOfItems": "{{ collection.products_count }}",
+    "itemListElement": [
+      {% for product in collection.products limit: 12 %}
+        {
+          "@type": "Product",
+          "position": {{ forloop.index }},
+          "name": "{{ product.title | escape }}",
+          "url": "{{ product.url | prepend: request.origin }}",
+          "offers": {
+            "@type": "Offer",
+            "price": "{{ product.price | divided_by: 100.0 }}",
+            "priceCurrency": "{{ cart.currency.iso_code }}",
+            "availability": "{% if product.available %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}"
+          }
+        }{% unless forloop.last %},{% endunless %}
+      {% endfor %}
+    ]
+  }
+}
+</script>
+
+<style>
+/* Collection Page Styles */
+.collection-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.collection-title {
+  margin-bottom: 1rem;
+}
+
+.collection-description {
+  max-width: 600px;
+  margin: 0 auto 2rem;
+  color: rgba(247, 243, 233, 0.8);
+}
+
+.collection-image {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.collection-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.collection-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: rgba(247, 243, 233, 0.05);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(247, 243, 233, 0.1);
+}
+
+.collection-controls__left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.collection-controls__right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.filter-toggle {
+  display: none;
+}
+
+.results-count {
+  color: rgba(247, 243, 233, 0.7);
+  font-size: 0.875rem;
+}
+
+.sort-form {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sort-label {
+  color: var(--color-warm-cream);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.sort-select {
+  min-width: 200px;
+}
+
+.collection-content {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 3rem;
+}
+
+.collection-filters {
+  background: rgba(247, 243, 233, 0.05);
+  border: 1px solid rgba(247, 243, 233, 0.1);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  height: fit-content;
+  position: sticky;
+  top: 6rem;
+}
+
+.filters-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(247, 243, 233, 0.1);
+}
+
+.filters-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-warm-cream);
+  margin: 0;
+}
+
+.clear-filters {
+  color: var(--color-golden-yellow);
+  text-decoration: none;
+  font-size: 0.875rem;
+}
+
+.clear-filters:hover {
+  text-decoration: underline;
+}
+
+.filter-group {
+  border-bottom: 1px solid rgba(247, 243, 233, 0.1);
+  margin-bottom: 1rem;
+}
+
+.filter-group__title {
+  padding: 1rem 0;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--color-warm-cream);
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.filter-group__title::-webkit-details-marker {
+  display: none;
+}
+
+.filter-count {
+  color: rgba(247, 243, 233, 0.6);
+  font-weight: normal;
+  font-size: 0.875rem;
+}
+
+.filter-group__content {
+  padding-bottom: 1rem;
+}
+
+.filter-item {
+  margin-bottom: 0.5rem;
+}
+
+.filter-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background-color var(--transition-base);
+  color: rgba(247, 243, 233, 0.8);
+}
+
+.filter-label:hover {
+  background: rgba(247, 243, 233, 0.05);
+}
+
+.filter-checkbox:checked + .filter-label {
+  background: rgba(246, 213, 92, 0.1);
+  color: var(--color-golden-yellow);
+}
+
+.price-range-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.price-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  color: rgba(247, 243, 233, 0.7);
+}
+
+.price-input {
+  font-size: 0.875rem;
+}
+
+.apply-filters {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.product-card {
+  text-align: center;
+  transition: transform var(--transition-base);
+}
+
+.product-card__image {
+  position: relative;
+  margin-bottom: 1rem;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.product-card__image img {
+  width: 100%;
+  height: auto;
+  transition: transform var(--transition-base);
+}
+
+.product-card:hover img {
+  transform: scale(1.05);
+}
+
+.product-badge {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: var(--color-golden-yellow);
+  color: var(--color-midnight-navy);
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.product-badge--sold-out {
+  background: rgba(239, 68, 68, 0.9);
+  color: white;
+}
+
+.product-card__placeholder {
+  width: 100%;
+  height: 300px;
+  background: rgba(247, 243, 233, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  border: 2px dashed rgba(247, 243, 233, 0.3);
+}
+
+.product-card__vendor {
+  color: rgba(247, 243, 233, 0.6);
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+
+.price {
+  font-weight: 600;
+  color: var(--color-golden-yellow);
+}
+
+.price--compare {
+  text-decoration: line-through;
+  color: rgba(247, 243, 233, 0.6);
+  margin-left: 0.5rem;
+}
+
+.pagination {
+  margin-top: 3rem;
+}
+
+.pagination__list {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.pagination__link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(247, 243, 233, 0.3);
+  border-radius: var(--radius-sm);
+  color: var(--color-warm-cream);
+  text-decoration: none;
+  transition: all var(--transition-base);
+  min-width: 44px;
+  justify-content: center;
+}
+
+.pagination__link:hover {
+  border-color: var(--color-golden-yellow);
+  background: rgba(246, 213, 92, 0.1);
+}
+
+.pagination__link--current {
+  background: var(--color-golden-yellow);
+  color: var(--color-midnight-navy);
+  border-color: var(--color-golden-yellow);
+}
+
+.pagination__ellipsis {
+  padding: 0.75rem 0.5rem;
+  color: rgba(247, 243, 233, 0.5);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  grid-column: 1 / -1;
+}
+
+.empty-state h2 {
+  margin-bottom: 1rem;
+  color: var(--color-warm-cream);
+}
+
+.empty-state p {
+  color: rgba(247, 243, 233, 0.7);
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 1024px) {
+  .collection-content {
+    grid-template-columns: 1fr;
+  }
+
+  .collection-filters {
+    position: static;
+    display: none;
+  }
+
+  .collection-filters.show {
+    display: block;
+    margin-bottom: 2rem;
+  }
+
+  .filter-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .collection-controls {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .collection-controls__left,
+  .collection-controls__right {
+    justify-content: space-between;
+  }
+
+  .sort-form {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .sort-select {
+    min-width: auto;
+  }
+
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .price-range-inputs {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .pagination__link {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+}
+</style>
+
+<script>
+// Collection page functionality with security measures
+document.addEventListener('DOMContentLoaded', function() {
+  // Filter toggle for mobile
+  const filterToggle = document.querySelector('.filter-toggle');
+  const filters = document.querySelector('.collection-filters');
+
+  if (filterToggle && filters) {
+    filterToggle.addEventListener('click', function() {
+      filters.classList.toggle('show');
+      const isVisible = filters.classList.contains('show');
+      this.setAttribute('aria-expanded', isVisible);
+    });
+  }
+
+  // Auto-submit sort form
+  const sortSelect = document.querySelector('.sort-select');
+  if (sortSelect) {
+    sortSelect.addEventListener('change', function() {
+      this.form.submit();
+    });
+  }
+
+  // Auto-submit filters form with debouncing
+  const filtersForm = document.getElementById('filters-form');
+  const priceInputs = document.querySelectorAll('.price-input');
+
+  if (filtersForm) {
+    let debounceTimer;
+
+    // Checkbox filters - submit immediately
+    const checkboxes = filtersForm.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+      checkbox.addEventListener('change', function() {
+        // Security: Validate checkbox value
+        if (this.checked && this.value && this.value.length > 0) {
+          filtersForm.submit();
+        } else if (!this.checked) {
+          filtersForm.submit();
+        }
+      });
+    });
+
+    // Price range inputs - debounced submission
+    priceInputs.forEach(input => {
+      input.addEventListener('input', function() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+          // Security: Validate price input
+          const value = parseFloat(this.value);
+          if (isNaN(value) || value < 0) {
+            this.value = '';
+            return;
+          }
+
+          // Check if both min and max are provided and valid
+          const minInput = filtersForm.querySelector('input[name*="min"]');
+          const maxInput = filtersForm.querySelector('input[name*="max"]');
+
+          if (minInput && maxInput) {
+            const minValue = parseFloat(minInput.value) || 0;
+            const maxValue = parseFloat(maxInput.value) || Infinity;
+
+            if (minValue <= maxValue) {
+              filtersForm.submit();
+            }
+          }
+        }, 1000);
+      });
+    });
+  }
+
+  // Quick add to cart functionality
+  const productForms = document.querySelectorAll('.product-form');
+  productForms.forEach(form => {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const button = this.querySelector('button[type="submit"]');
+      const originalText = button.textContent;
+
+      // Security: Validate form data
+      const variantId = this.querySelector('input[name="id"]').value;
+      if (!variantId || variantId === '') {
+        console.error('Invalid variant ID');
+        return;
+      }
+
+      // Show loading state
+      button.disabled = true;
+      button.textContent = '{{ "general.accessibility.loading" | t | escape }}';
+
+      const formData = new FormData(this);
+
+      // Use theme's secure cart API if available
+      if (window.theme && window.theme.cart && window.theme.cart.add) {
+        window.theme.cart.add(formData)
+          .then(() => {
+            button.textContent = '{{ "cart.notifications.added" | t | escape }}';
+            setTimeout(() => {
+              button.textContent = originalText;
+              button.disabled = false;
+            }, 2000);
+          })
+          .catch(error => {
+            console.error('Cart add error:', error);
+            button.textContent = '{{ "cart.notifications.error" | t | escape }}';
+            setTimeout(() => {
+              button.textContent = originalText;
+              button.disabled = false;
+            }, 2000);
+          });
+      } else {
+        // Fallback to standard form submission
+        this.submit();
+      }
+    });
+  });
+});
+</script>

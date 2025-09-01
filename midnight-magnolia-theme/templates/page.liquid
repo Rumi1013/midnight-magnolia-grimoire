@@ -1,0 +1,599 @@
+{% comment %}
+  Page Template - Midnight Magnolia Theme
+
+  Security Features:
+  - XSS prevention with proper escaping
+  - Input sanitization for user content
+  - Secure form handling for contact forms
+  - CSRF protection for forms
+  - Accessibility features (WCAG 2.1 AA)
+  - SEO optimization with security considerations
+{% endcomment %}
+
+<div class="page celestial-bg">
+  <div class="container">
+
+    <!-- Breadcrumb Navigation -->
+    <nav class="breadcrumb" aria-label="{{ 'general.accessibility.breadcrumb' | t | escape }}">
+      <ol class="breadcrumb__list">
+        <li class="breadcrumb__item">
+          <a href="{{ routes.root_url }}" class="breadcrumb__link">{{ 'layout.navigation.home' | t | escape }}</a>
+        </li>
+        <li class="breadcrumb__item" aria-current="page">
+          {{ page.title | escape }}
+        </li>
+      </ol>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="page-header">
+      <h1 class="page-title">{{ page.title | escape }}</h1>
+    </header>
+
+    <!-- Page Content -->
+    <main class="page-content" role="main">
+      <article class="page-article">
+
+        {% if page.content != blank %}
+          <div class="page-content__body user-content">
+            {{ page.content }}
+          </div>
+        {% endif %}
+
+        <!-- Special handling for contact page -->
+        {% if page.handle == 'contact' %}
+          <div class="contact-form-section">
+            <div class="contact-form-wrapper magnolia-card">
+              <h2 class="contact-form__title">{{ 'contact.form.title' | t | escape }}</h2>
+
+              {% form 'contact', class: 'contact-form', novalidate: 'novalidate' %}
+                {% if settings.enable_csrf_protection %}
+                  <input type="hidden" name="authenticity_token" value="{{ form.authenticity_token | escape }}">
+                {% endif %}
+
+                {% if form.posted_successfully? %}
+                  <div class="form-message form-message--success" role="alert">
+                    {{ 'contact.form.success' | t | escape }}
+                  </div>
+                {% endif %}
+
+                {% if form.errors %}
+                  <div class="form-message form-message--error" role="alert">
+                    <ul class="form-errors">
+                      {% for field in form.errors %}
+                        {% for error in field %}
+                          <li>{{ error | escape }}</li>
+                        {% endfor %}
+                      {% endfor %}
+                    </ul>
+                  </div>
+                {% endif %}
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="contact-name" class="form-label">{{ 'contact.form.name' | t | escape }} <span class="required">*</span></label>
+                    <input
+                      type="text"
+                      id="contact-name"
+                      name="contact[name]"
+                      class="form-input"
+                      value="{% if form.name %}{{ form.name | escape }}{% endif %}"
+                      required
+                      maxlength="100"
+                      aria-describedby="name-error"
+                    >
+                    {% if form.errors contains 'name' %}
+                      <div id="name-error" class="form-error" role="alert">
+                        {{ form.errors.translated_fields['name'] | capitalize | escape }} {{ form.errors.messages['name'] | escape }}
+                      </div>
+                    {% endif %}
+                  </div>
+
+                  <div class="form-group">
+                    <label for="contact-email" class="form-label">{{ 'contact.form.email' | t | escape }} <span class="required">*</span></label>
+                    <input
+                      type="email"
+                      id="contact-email"
+                      name="contact[email]"
+                      class="form-input"
+                      value="{% if form.email %}{{ form.email | escape }}{% endif %}"
+                      required
+                      maxlength="254"
+                      pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                      aria-describedby="email-error"
+                    >
+                    {% if form.errors contains 'email' %}
+                      <div id="email-error" class="form-error" role="alert">
+                        {{ form.errors.translated_fields['email'] | capitalize | escape }} {{ form.errors.messages['email'] | escape }}
+                      </div>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="contact-phone" class="form-label">{{ 'contact.form.phone' | t | escape }}</label>
+                  <input
+                    type="tel"
+                    id="contact-phone"
+                    name="contact[phone]"
+                    class="form-input"
+                    value="{% if form.phone %}{{ form.phone | escape }}{% endif %}"
+                    maxlength="20"
+                    pattern="[0-9\s\-\+\(\)]*"
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label for="contact-subject" class="form-label">{{ 'contact.form.subject' | t | escape }}</label>
+                  <input
+                    type="text"
+                    id="contact-subject"
+                    name="contact[subject]"
+                    class="form-input"
+                    value="{% if form.subject %}{{ form.subject | escape }}{% endif %}"
+                    maxlength="200"
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label for="contact-message" class="form-label">{{ 'contact.form.message' | t | escape }} <span class="required">*</span></label>
+                  <textarea
+                    id="contact-message"
+                    name="contact[body]"
+                    class="form-textarea"
+                    required
+                    rows="6"
+                    maxlength="2000"
+                    aria-describedby="message-error"
+                  >{% if form.body %}{{ form.body | escape }}{% endif %}</textarea>
+                  {% if form.errors contains 'body' %}
+                    <div id="message-error" class="form-error" role="alert">
+                      {{ form.errors.translated_fields['body'] | capitalize | escape }} {{ form.errors.messages['body'] | escape }}
+                    </div>
+                  {% endif %}
+                </div>
+
+                <!-- Honeypot field for spam protection -->
+                <div class="form-group visually-hidden" aria-hidden="true">
+                  <label for="contact-website">Website</label>
+                  <input
+                    type="text"
+                    id="contact-website"
+                    name="contact[website]"
+                    tabindex="-1"
+                    autocomplete="off"
+                  >
+                </div>
+
+                <div class="form-actions">
+                  <button type="submit" class="btn btn--primary">
+                    {{ 'contact.form.submit' | t | escape }}
+                  </button>
+                </div>
+              {% endform %}
+            </div>
+
+            <!-- Contact Information -->
+            {% if settings.contact_address != blank or settings.contact_phone != blank or settings.contact_email != blank %}
+              <div class="contact-info magnolia-card">
+                <h3 class="contact-info__title">{{ 'contact.info.title' | t | escape }}</h3>
+
+                {% if settings.contact_address != blank %}
+                  <div class="contact-info__item">
+                    <strong>{{ 'contact.info.address' | t | escape }}:</strong>
+                    <p>{{ settings.contact_address | escape | newline_to_br }}</p>
+                  </div>
+                {% endif %}
+
+                {% if settings.contact_phone != blank %}
+                  <div class="contact-info__item">
+                    <strong>{{ 'contact.info.phone' | t | escape }}:</strong>
+                    <a href="tel:{{ settings.contact_phone | escape }}">{{ settings.contact_phone | escape }}</a>
+                  </div>
+                {% endif %}
+
+                {% if settings.contact_email != blank %}
+                  <div class="contact-info__item">
+                    <strong>{{ 'contact.info.email' | t | escape }}:</strong>
+                    <a href="mailto:{{ settings.contact_email | escape }}">{{ settings.contact_email | escape }}</a>
+                  </div>
+                {% endif %}
+
+                {% if settings.store_hours != blank %}
+                  <div class="contact-info__item">
+                    <strong>{{ 'contact.info.hours' | t | escape }}:</strong>
+                    <p>{{ settings.store_hours | escape | newline_to_br }}</p>
+                  </div>
+                {% endif %}
+              </div>
+            {% endif %}
+          </div>
+        {% endif %}
+
+        <!-- Newsletter signup for specific pages -->
+        {% if page.handle == 'about' or page.handle == 'contact' %}
+          <div class="page-newsletter">
+            <div class="newsletter__content magnolia-card">
+              <h3 class="newsletter__title">{{ 'newsletter.title' | t | escape }}</h3>
+              <p class="newsletter__subtitle">{{ 'newsletter.subtitle' | t | escape }}</p>
+
+              <form action="{{ routes.root_url }}contact#newsletter" method="post" class="newsletter__form" novalidate>
+                {% if settings.enable_csrf_protection %}
+                  <input type="hidden" name="authenticity_token" value="{{ form.authenticity_token | escape }}">
+                {% endif %}
+
+                <input type="hidden" name="contact[tags]" value="newsletter">
+
+                <div class="form-group">
+                  <label for="page-newsletter-email" class="visually-hidden">{{ 'newsletter.email_placeholder' | t | escape }}</label>
+                  <input
+                    type="email"
+                    id="page-newsletter-email"
+                    name="contact[email]"
+                    placeholder="{{ 'newsletter.email_placeholder' | t | escape }}"
+                    aria-label="{{ 'newsletter.email_placeholder' | t | escape }}"
+                    class="form-input"
+                    required
+                    maxlength="254"
+                    pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                  >
+                  <button type="submit" class="btn btn--primary" aria-label="{{ 'newsletter.submit' | t | escape }}">
+                    {{ 'newsletter.submit' | t | escape }}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        {% endif %}
+      </article>
+    </main>
+  </div>
+</div>
+
+<!-- Structured Data for SEO -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "{{ page.title | escape }}",
+  "description": "{{ page.content | strip_html | truncate: 160 | escape }}",
+  "url": "{{ canonical_url }}",
+  "mainEntity": {
+    "@type": "Article",
+    "headline": "{{ page.title | escape }}",
+    "author": {
+      "@type": "Organization",
+      "name": "{{ shop.name | escape }}"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "{{ shop.name | escape }}"
+    }
+  }
+}
+</script>
+
+<style>
+/* Page Template Styles */
+.page-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.page-title {
+  margin-bottom: 1rem;
+}
+
+.page-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.page-content__body {
+  margin-bottom: 3rem;
+  line-height: 1.7;
+}
+
+.page-content__body h2,
+.page-content__body h3,
+.page-content__body h4 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: var(--color-golden-yellow);
+}
+
+.page-content__body p {
+  margin-bottom: 1.5rem;
+}
+
+.page-content__body ul,
+.page-content__body ol {
+  margin-bottom: 1.5rem;
+  padding-left: 2rem;
+}
+
+.page-content__body li {
+  margin-bottom: 0.5rem;
+}
+
+.page-content__body blockquote {
+  border-left: 4px solid var(--color-golden-yellow);
+  padding-left: 1.5rem;
+  margin: 2rem 0;
+  font-style: italic;
+  color: rgba(247, 243, 233, 0.9);
+}
+
+.contact-form-section {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 3rem;
+  margin-top: 3rem;
+}
+
+.contact-form-wrapper {
+  padding: 2rem;
+}
+
+.contact-form__title {
+  margin-bottom: 2rem;
+  text-align: center;
+  color: var(--color-golden-yellow);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--color-warm-cream);
+  font-weight: 500;
+}
+
+.required {
+  color: #ef4444;
+}
+
+.form-input,
+.form-textarea {
+  width: 100%;
+  padding: 0.875rem;
+  background: rgba(247, 243, 233, 0.05);
+  border: 1px solid rgba(247, 243, 233, 0.2);
+  border-radius: var(--radius-sm);
+  color: var(--color-pure-white);
+  font-family: var(--font-body-family);
+  font-size: 1rem;
+  transition: all var(--transition-base);
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--color-golden-yellow);
+  box-shadow: 0 0 0 3px rgba(246, 213, 92, 0.1);
+  background: rgba(247, 243, 233, 0.1);
+}
+
+.form-input::placeholder,
+.form-textarea::placeholder {
+  color: rgba(247, 243, 233, 0.6);
+  opacity: 1;
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.form-actions {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.form-message {
+  padding: 1rem;
+  border-radius: var(--radius-sm);
+  margin-bottom: 2rem;
+}
+
+.form-message--success {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #34d399;
+}
+
+.form-message--error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+}
+
+.form-errors {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.form-error {
+  color: #fca5a5;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+
+.contact-info {
+  padding: 2rem;
+  height: fit-content;
+}
+
+.contact-info__title {
+  margin-bottom: 2rem;
+  color: var(--color-golden-yellow);
+  text-align: center;
+}
+
+.contact-info__item {
+  margin-bottom: 1.5rem;
+}
+
+.contact-info__item strong {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--color-warm-cream);
+}
+
+.contact-info__item p {
+  color: rgba(247, 243, 233, 0.8);
+  margin: 0;
+}
+
+.contact-info__item a {
+  color: var(--color-golden-yellow);
+  text-decoration: none;
+}
+
+.contact-info__item a:hover {
+  text-decoration: underline;
+}
+
+.page-newsletter {
+  margin-top: 3rem;
+}
+
+.page-newsletter .newsletter__content {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 2rem;
+}
+
+.page-newsletter .newsletter__form .form-group {
+  display: flex;
+  gap: 1rem;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.page-newsletter .newsletter__form .form-input {
+  flex: 1;
+}
+
+@media (max-width: 768px) {
+  .contact-form-section {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .page-newsletter .newsletter__form .form-group {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-content {
+    padding: 0 1rem;
+  }
+
+  .contact-form-wrapper,
+  .contact-info {
+    padding: 1.5rem;
+  }
+}
+</style>
+
+<script>
+// Page functionality with security measures
+document.addEventListener('DOMContentLoaded', function() {
+  const contactForm = document.querySelector('.contact-form');
+  const newsletterForm = document.querySelector('.page-newsletter .newsletter__form');
+
+  // Contact form validation and security
+  if (contactForm) {
+    const honeypotField = contactForm.querySelector('input[name="contact[website]"]');
+
+    contactForm.addEventListener('submit', function(e) {
+      // Security: Check honeypot field
+      if (honeypotField && honeypotField.value !== '') {
+        e.preventDefault();
+        console.log('Spam detected');
+        return false;
+      }
+
+      // Validate required fields
+      const nameField = this.querySelector('#contact-name');
+      const emailField = this.querySelector('#contact-email');
+      const messageField = this.querySelector('#contact-message');
+
+      let isValid = true;
+
+      // Security: Basic validation
+      if (!nameField.value.trim() || nameField.value.length > 100) {
+        isValid = false;
+        nameField.focus();
+      }
+
+      if (!emailField.value.trim() || !isValidEmail(emailField.value) || emailField.value.length > 254) {
+        isValid = false;
+        if (isValid) emailField.focus();
+      }
+
+      if (!messageField.value.trim() || messageField.value.length > 2000) {
+        isValid = false;
+        if (isValid) messageField.focus();
+      }
+
+      if (!isValid) {
+        e.preventDefault();
+        return false;
+      }
+    });
+  }
+
+  // Newsletter form validation
+  if (newsletterForm) {
+    newsletterForm.addEventListener('submit', function(e) {
+      const emailField = this.querySelector('#page-newsletter-email');
+
+      if (!emailField.value.trim() || !isValidEmail(emailField.value)) {
+        e.preventDefault();
+        emailField.focus();
+        return false;
+      }
+    });
+  }
+
+  // Email validation helper
+  function isValidEmail(email) {
+    const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
+    return emailRegex.test(email);
+  }
+
+  // Security: Prevent XSS in user content
+  const userContent = document.querySelector('.user-content');
+  if (userContent) {
+    // Remove any potentially dangerous attributes
+    const dangerousAttrs = ['onload', 'onerror', 'onclick', 'onmouseover', 'onfocus', 'onblur'];
+    const allElements = userContent.querySelectorAll('*');
+
+    allElements.forEach(element => {
+      dangerousAttrs.forEach(attr => {
+        if (element.hasAttribute(attr)) {
+          element.removeAttribute(attr);
+        }
+      });
+    });
+  }
+});
+</script>

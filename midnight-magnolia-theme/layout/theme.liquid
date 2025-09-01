@@ -1,0 +1,280 @@
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+<head>
+  <!-- Security Headers -->
+  {% comment %}
+  Security Implementation Notes:
+  - Content Security Policy implemented via meta tag and server headers
+  - XSS protection through Liquid escaping and CSP
+  - CSRF protection via authenticity tokens
+  - HTTPS enforcement through settings
+  - Input validation and output escaping throughout
+  {% endcomment %}
+
+  <!-- Content Security Policy -->
+  {% if settings.enable_csp %}
+    <meta http-equiv="Content-Security-Policy" content="
+      default-src 'self' {{ shop.permanent_domain }} *.shopifycdn.com;
+      script-src 'self' 'unsafe-inline' 'unsafe-eval' {{ shop.permanent_domain }} *.shopifycdn.com *.shopify.com {% if settings.google_analytics_id != blank %}www.googletagmanager.com www.google-analytics.com{% endif %} {% if settings.facebook_pixel_id != blank %}connect.facebook.net{% endif %} {{ settings.allowed_domains | split: ' ' | join: ' ' }};
+      style-src 'self' 'unsafe-inline' {{ shop.permanent_domain }} *.shopifycdn.com {{ settings.allowed_domains | split: ' ' | join: ' ' }};
+      img-src 'self' data: {{ shop.permanent_domain }} *.shopifycdn.com {% if settings.google_analytics_id != blank %}www.google-analytics.com{% endif %} {% if settings.facebook_pixel_id != blank %}www.facebook.com{% endif %} {{ settings.allowed_domains | split: ' ' | join: ' ' }};
+      font-src 'self' {{ shop.permanent_domain }} *.shopifycdn.com {{ settings.allowed_domains | split: ' ' | join: ' ' }};
+      connect-src 'self' {{ shop.permanent_domain }} *.shopifycdn.com *.shopify.com {% if settings.google_analytics_id != blank %}www.google-analytics.com{% endif %} {% if settings.facebook_pixel_id != blank %}www.facebook.com{% endif %};
+      frame-src {{ shop.permanent_domain }} *.shopify.com {% if settings.facebook_pixel_id != blank %}www.facebook.com{% endif %};
+      object-src 'none';
+      base-uri 'self';
+      form-action 'self' {{ shop.permanent_domain }} *.shopify.com;
+    ">
+  {% endif %}
+
+  <!-- Security Headers -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+  <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+
+  {% if settings.enable_hsts %}
+    <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains; preload">
+  {% endif %}
+
+  <!-- Force HTTPS -->
+  {% if settings.force_https and request.host != 'localhost' %}
+    {% if canonical_url contains 'http://' %}
+      <script>
+        if (location.protocol !== 'https:') {
+          location.replace('{{ canonical_url | replace: 'http://', 'https://' }}');
+        }
+      </script>
+    {% endif %}
+  {% endif %}
+
+  <!-- Basic Meta Tags -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="{{ settings.color_midnight_navy | default: '#1a1a2e' }}">
+
+  <!-- CSRF Token for Forms -->
+  {% if settings.enable_csrf_protection %}
+    <meta name="csrf-token" content="{{ form.authenticity_token | escape }}">
+  {% endif %}
+
+  <!-- Preconnect to external domains for performance -->
+  {% if settings.preload_fonts %}
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  {% endif %}
+
+  <!-- Title and SEO -->
+  <title>
+    {{ page_title }}
+    {%- if current_tags %} &ndash; {{ 'general.meta.tags' | t: tags: current_tags | join: ', ' | escape }}{% endif -%}
+    {%- if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page | escape }}{% endif -%}
+    {%- unless page_title contains shop.name %} &ndash; {{ shop.name | escape }}{% endunless -%}
+  </title>
+
+  {% if page_description %}
+    <meta name="description" content="{{ page_description | escape | truncate: 160 }}">
+  {% elsif settings.seo_description != blank %}
+    <meta name="description" content="{{ settings.seo_description | escape | truncate: 160 }}">
+  {% endif %}
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="{{ canonical_url }}">
+
+  <!-- Open Graph / Social Media -->
+  <meta property="og:site_name" content="{{ shop.name | escape }}">
+  <meta property="og:url" content="{{ canonical_url }}">
+  <meta property="og:title" content="{{ page_title | default: shop.name | escape }}">
+  <meta property="og:type" content="website">
+  <meta property="og:description" content="{{ page_description | default: settings.seo_description | escape | truncate: 160 }}">
+
+  {% if settings.seo_image %}
+    <meta property="og:image" content="https:{{ settings.seo_image | img_url: '1200x630' }}">
+    <meta property="og:image:secure_url" content="https:{{ settings.seo_image | img_url: '1200x630' }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+  {% endif %}
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ page_title | default: shop.name | escape }}">
+  <meta name="twitter:description" content="{{ page_description | default: settings.seo_description | escape | truncate: 160 }}">
+
+  <!-- Favicon -->
+  {% if settings.favicon != blank %}
+    <link rel="icon" type="image/png" href="{{ settings.favicon | img_url: '32x32' }}">
+    <link rel="apple-touch-icon" href="{{ settings.favicon | img_url: '180x180' }}">
+  {% endif %}
+
+  <!-- Fonts -->
+  {% comment %} Load fonts securely {% endcomment %}
+  {% if settings.preload_fonts %}
+    <!-- Brand Fonts: Playfair Display, Lora, Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="preload" href="{{ 'theme.css' | asset_url }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="{{ 'theme.css' | asset_url }}"></noscript>
+  {% else %}
+    <!-- Brand Fonts: Playfair Display, Lora, Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    {{ 'theme.css' | asset_url | stylesheet_tag }}
+  {% endif %}
+
+  <!-- Critical CSS inline for performance -->
+  <style>
+    /* Critical above-the-fold styles */
+    :root {
+      /* Override base font variables to brand defaults */
+      --font-heading-family: 'Playfair Display', Georgia, serif;
+      --font-body-family: 'Lora', Georgia, serif;
+      --font-ui-family: 'Montserrat', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      /* Brand color accents */
+      --mm-sage: #DDE3DA;
+      --mm-linen: #FAF3E0;
+      --mm-warm-gray: #D4B99F;
+    }
+    body { margin: 0; font-family: var(--font-body-family); }
+    .loading { opacity: 0; }
+    .loaded { opacity: 1; transition: opacity 0.3s ease; }
+    /* Dyslexia-friendly mode */
+    .dyslexia-friendly { letter-spacing: 0.02em; word-spacing: 0.02em; line-height: 1.75; }
+    /* Reduced motion toggle (theme-wide) */
+    {% if settings.enable_motion_toggle == false or settings.reduce_motion_default %}
+      * { animation: none !important; transition: none !important; }
+    {% endif %}
+  </style>
+
+  <!-- Theme JavaScript -->
+  <script>
+    // Security: Safe global configuration
+    window.theme = window.theme || {};
+    window.theme.settings = {
+      cartType: {{ settings.cart_type | json }},
+      moneyFormat: {{ shop.money_format | json }},
+      moneyWithCurrencyFormat: {{ shop.money_with_currency_format | json }},
+      enableCsrf: {{ settings.enable_csrf_protection | json }},
+      shopDomain: {{ shop.permanent_domain | json }},
+      routes: {
+        cart: {{ routes.cart_url | json }},
+        cartAdd: {{ routes.cart_add_url | json }},
+        cartChange: {{ routes.cart_change_url | json }},
+        search: {{ routes.search_url | json }},
+        predictiveSearch: {{ routes.predictive_search_url | json }}
+      }
+    };
+
+    // CSRF Token Helper
+    {% if settings.enable_csrf_protection %}
+      window.theme.csrfToken = {{ form.authenticity_token | json }};
+
+      // Add CSRF token to all AJAX requests
+      window.theme.addCsrfToken = function(data) {
+        if (typeof data === 'object' && data !== null) {
+          data.authenticity_token = window.theme.csrfToken;
+        }
+        return data;
+      };
+    {% endif %}
+
+    // Performance: Mark when JS starts loading
+    window.theme.jsLoadTime = Date.now();
+  </script>
+
+  <!-- Analytics -->
+  {% if settings.google_analytics_id != blank %}
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ settings.google_analytics_id | escape }}"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '{{ settings.google_analytics_id | escape }}', {
+        'anonymize_ip': true,
+        'cookie_flags': 'SameSite=None;Secure'
+      });
+    </script>
+  {% endif %}
+
+  {% if settings.facebook_pixel_id != blank %}
+    <!-- Facebook Pixel -->
+    <script>
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '{{ settings.facebook_pixel_id | escape }}');
+      fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id={{ settings.facebook_pixel_id | escape }}&ev=PageView&noscript=1"/></noscript>
+  {% endif %}
+
+  <!-- Shopify Required -->
+  {{ content_for_header }}
+</head>
+
+<body class="template-{{ template | replace: '.', ' ' | truncatewords: 1, '' | handle }}{% if customer %} customer-logged-in{% endif %}{% if request.design_mode %} shopify-design-mode{% endif %}{% if settings.dyslexia_friendly_default %} dyslexia-friendly{% endif %}">
+
+  <!-- Skip to main content for accessibility -->
+  <a class="skip-to-content-link visually-hidden" href="#main-content">
+    {{ 'general.accessibility.skip_to_content' | t | escape }}
+  </a>
+
+  <!-- GDPR Cookie Consent -->
+  {% if settings.enable_gdpr_compliance %}
+    <div id="cookie-consent" class="cookie-consent" style="display: none;">
+      <div class="cookie-consent__content">
+        <p>{{ 'general.gdpr.cookie_message' | t | escape }}</p>
+        <button type="button" class="btn btn--primary" onclick="acceptCookies()">
+          {{ 'general.gdpr.accept' | t | escape }}
+        </button>
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- Header -->
+  {% section 'header' %}
+
+  <!-- Main Content -->
+  <main id="main-content" role="main" tabindex="-1">
+    {{ content_for_layout }}
+  </main>
+
+  <!-- Footer -->
+  {% section 'footer' %}
+
+  <!-- Theme JavaScript -->
+  <script src="{{ 'theme.js' | asset_url }}" defer></script>
+
+  <!-- Loading indicator removal -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      document.body.classList.remove('loading');
+      document.body.classList.add('loaded');
+    });
+  </script>
+
+  <!-- GDPR Cookie Consent Script -->
+  {% if settings.enable_gdpr_compliance %}
+    <script>
+      function acceptCookies() {
+        localStorage.setItem('cookiesAccepted', 'true');
+        document.getElementById('cookie-consent').style.display = 'none';
+      }
+
+      // Show cookie consent if not already accepted
+      if (!localStorage.getItem('cookiesAccepted')) {
+        document.getElementById('cookie-consent').style.display = 'block';
+      }
+    </script>
+  {% endif %}
+
+</body>
+</html>

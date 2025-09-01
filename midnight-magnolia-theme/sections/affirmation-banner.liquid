@@ -1,0 +1,121 @@
+{% comment %}
+  Affirmation Banner — Midnight Magnolia
+  - Gentle, continuous scroller for short affirmations
+  - Respects prefers-reduced-motion and theme motion toggle
+  - Accessible: semantic, readable without motion
+{% endcomment %}
+
+<section class="affirmation-banner" role="region" aria-label="Affirmations" data-section-id="{{ section.id }}">
+  <div class="affirmation-banner__track"{% if section.settings.pause_on_hover %} data-pause="true"{% endif %} style="--speed: {{ section.settings.speed | default: 30 }}s; --bg: {{ section.settings.bg | default: '#0f1225' }}; --fg: {{ section.settings.fg | default: '#f7f3e9' }};">
+    <div class="affirmation-banner__inner">
+      {% if section.blocks.size > 0 %}
+        {% for block in section.blocks %}
+          {% if block.type == 'affirmation' and block.settings.text != blank %}
+            <span class="affirmation" {{ block.shopify_attributes }}>{{ block.settings.text | escape }}</span>
+          {% endif %}
+        {% endfor %}
+        {%- comment -%} Duplicate to create seamless loop {%- endcomment -%}
+        {% for block in section.blocks %}
+          {% if block.type == 'affirmation' and block.settings.text != blank %}
+            <span class="affirmation" aria-hidden="true">{{ block.settings.text | escape }}</span>
+          {% endif %}
+        {% endfor %}
+      {% else %}
+        <span class="affirmation">I am safe to grow softly.</span>
+        <span class="affirmation">My voice is gentle and sure.</span>
+        <span class="affirmation">I honor rest, ritual, and roots.</span>
+        <span class="affirmation" aria-hidden="true">I am safe to grow softly.</span>
+        <span class="affirmation" aria-hidden="true">My voice is gentle and sure.</span>
+        <span class="affirmation" aria-hidden="true">I honor rest, ritual, and roots.</span>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<style>
+  .affirmation-banner {
+    --banner-bg: var(--bg, #0f1225);
+    --banner-fg: var(--fg, var(--color-warm-cream));
+    background: var(--banner-bg);
+    color: var(--banner-fg);
+    border-block: 1px solid rgba(255,255,255,0.08);
+    overflow: hidden;
+  }
+  .affirmation-banner__track {
+    white-space: nowrap;
+    width: 100%;
+  }
+  .affirmation-banner__inner {
+    display: inline-flex;
+    align-items: center;
+    gap: clamp(1.25rem, 3vw, 2.5rem);
+    padding-block: 0.75rem;
+    will-change: transform;
+    animation: scroll-x linear infinite;
+    animation-duration: var(--speed, 30s);
+  }
+  .affirmation {
+    font-family: var(--font-ui-family, var(--font-body-family));
+    font-size: clamp(0.95rem, 1.6vw, 1.05rem);
+    letter-spacing: 0.02em;
+    opacity: 0.9;
+  }
+  .affirmation::after {
+    content: '•';
+    margin-inline: clamp(0.75rem, 2vw, 1.25rem);
+    opacity: 0.4;
+  }
+  .affirmation:last-child::after { content: ''; }
+
+  @keyframes scroll-x {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(-50%, 0, 0); }
+  }
+
+  /* Pause on hover if enabled */
+  .affirmation-banner__track[data-pause="true"] .affirmation-banner__inner:hover {
+    animation-play-state: paused;
+  }
+
+  /* Respect reduced motion preferences and theme toggle */
+  @media (prefers-reduced-motion: reduce) {
+    .affirmation-banner__inner { animation: none; }
+  }
+  {% if settings.enable_motion_toggle == false or settings.reduce_motion_default %}
+    .affirmation-banner__inner { animation: none !important; }
+  {% endif %}
+</style>
+
+{% schema %}
+{
+  "name": "Affirmation banner",
+  "settings": [
+    { "type": "range", "id": "speed", "label": "Scroll duration (slower ← → faster)", "min": 10, "max": 60, "step": 2, "unit": "s", "default": 30 },
+    { "type": "checkbox", "id": "pause_on_hover", "label": "Pause on hover", "default": true },
+    { "type": "color", "id": "bg", "label": "Background", "default": "#0f1225" },
+    { "type": "color", "id": "fg", "label": "Text color", "default": "#f7f3e9" }
+  ],
+  "blocks": [
+    {
+      "type": "affirmation",
+      "name": "Affirmation",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Text", "default": "I am safe to grow softly." }
+      ]
+    }
+  ],
+  "max_blocks": 12,
+  "presets": [
+    {
+      "name": "Affirmation banner",
+      "category": "Text",
+      "blocks": [
+        { "type": "affirmation", "settings": { "text": "I am safe to grow softly." } },
+        { "type": "affirmation", "settings": { "text": "My voice is gentle and sure." } },
+        { "type": "affirmation", "settings": { "text": "I honor rest, ritual, and roots." } }
+      ]
+    }
+  ]
+}
+{% endschema %}
+

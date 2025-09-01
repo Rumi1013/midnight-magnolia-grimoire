@@ -1,0 +1,317 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Midnight Magnolia",
+    "theme_version": "1.0.0",
+    "theme_author": "Midnight Magnolia",
+    "theme_documentation_url": "",
+    "theme_support_url": ""
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Color Palette"
+      },
+      {
+        "type": "color",
+        "id": "color_midnight_navy",
+        "label": "Midnight Navy",
+        "default": "#1a1a2e",
+        "info": "Primary dark color for backgrounds"
+      },
+      {
+        "type": "color",
+        "id": "color_deep_purple",
+        "label": "Deep Purple",
+        "default": "#16213e",
+        "info": "Secondary dark color for gradients"
+      },
+      {
+        "type": "color",
+        "id": "color_mystical_purple",
+        "label": "Mystical Purple",
+        "default": "#9f7aea",
+        "info": "Accent color for mystical elements"
+      },
+      {
+        "type": "color",
+        "id": "color_warm_cream",
+        "label": "Warm Cream",
+        "default": "#f7f3e9",
+        "info": "Light text and background color"
+      },
+      {
+        "type": "color",
+        "id": "color_golden_yellow",
+        "label": "Golden Yellow",
+        "default": "#f6d55c",
+        "info": "Primary accent color for CTAs"
+      },
+      {
+        "type": "color",
+        "id": "color_warm_gold",
+        "label": "Warm Gold",
+        "default": "#e6c347",
+        "info": "Secondary gold color for hover states"
+      }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Font Settings"
+      },
+      {
+        "type": "font_picker",
+        "id": "font_heading",
+        "label": "Heading Font",
+        "default": "playfair_display_n7",
+        "info": "Font for headings and titles"
+      },
+      {
+        "type": "font_picker",
+        "id": "font_body",
+        "label": "Body Font",
+        "default": "lora_n4",
+        "info": "Font for body text and paragraphs"
+      },
+      {
+        "type": "font_picker",
+        "id": "font_ui",
+        "label": "UI Font",
+        "default": "montserrat_n4",
+        "info": "Font for UI elements (menus, buttons)"
+      },
+      {
+        "type": "range",
+        "id": "font_size_base",
+        "label": "Base Font Size",
+        "min": 14,
+        "max": 20,
+        "step": 1,
+        "unit": "px",
+        "default": 16,
+        "info": "Base font size for body text"
+      }
+    ]
+  },
+  {
+    "name": "Layout",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Page Layout"
+      },
+      {
+        "type": "range",
+        "id": "page_width",
+        "label": "Page Width",
+        "min": 1000,
+        "max": 1400,
+        "step": 50,
+        "unit": "px",
+        "default": 1200,
+        "info": "Maximum width of page content"
+      },
+      {
+        "type": "range",
+        "id": "section_padding",
+        "label": "Section Padding",
+        "min": 20,
+        "max": 100,
+        "step": 5,
+        "unit": "px",
+        "default": 60,
+        "info": "Vertical padding for sections"
+      }
+    ]
+  },
+  {
+    "name": "Security",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Security Settings"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_csp",
+        "label": "Enable Content Security Policy",
+        "default": true,
+        "info": "Enables Content Security Policy headers for XSS protection"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_csrf_protection",
+        "label": "Enable CSRF Protection",
+        "default": true,
+        "info": "Enables Cross-Site Request Forgery protection for forms"
+      },
+      {
+        "type": "checkbox",
+        "id": "force_https",
+        "label": "Force HTTPS",
+        "default": true,
+        "info": "Redirects all HTTP requests to HTTPS"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_hsts",
+        "label": "Enable HSTS",
+        "default": true,
+        "info": "Enables HTTP Strict Transport Security header"
+      },
+      {
+        "type": "text",
+        "id": "allowed_domains",
+        "label": "Allowed External Domains",
+        "default": "fonts.googleapis.com fonts.gstatic.com",
+        "info": "Space-separated list of trusted external domains (max 500 chars)",
+        "placeholder": "example.com trusted-site.com"
+      }
+    ]
+  },
+  {
+    "name": "Performance",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Performance Options"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_lazy_loading",
+        "label": "Enable Lazy Loading",
+        "default": true,
+        "info": "Enables lazy loading for images"
+      },
+      {
+        "type": "checkbox",
+        "id": "preload_fonts",
+        "label": "Preload Fonts",
+        "default": true,
+        "info": "Preloads critical fonts for better performance"
+      },
+      {
+        "type": "checkbox",
+        "id": "minify_css",
+        "label": "Minify CSS",
+        "default": true,
+        "info": "Minifies CSS output in production"
+      }
+    ]
+  },
+  {
+    "name": "Social Media",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Social Media Links"
+      },
+      {
+        "type": "url",
+        "id": "social_facebook",
+        "label": "Facebook URL",
+        "info": "Complete Facebook page URL"
+      },
+      {
+        "type": "url",
+        "id": "social_instagram",
+        "label": "Instagram URL",
+        "info": "Complete Instagram profile URL"
+      },
+      {
+        "type": "url",
+        "id": "social_twitter",
+        "label": "Twitter URL",
+        "info": "Complete Twitter profile URL"
+      },
+      {
+        "type": "url",
+        "id": "social_pinterest",
+        "label": "Pinterest URL",
+        "info": "Complete Pinterest profile URL"
+      },
+      {
+        "type": "url",
+        "id": "social_youtube",
+        "label": "YouTube URL",
+        "info": "Complete YouTube channel URL"
+      }
+    ]
+  },
+  {
+    "name": "SEO",
+    "settings": [
+      {
+        "type": "header",
+        "content": "SEO Settings"
+      },
+      {
+        "type": "text",
+        "id": "seo_title",
+        "label": "Default Page Title",
+        "default": "Midnight Magnolia - Spiritual Wellness & Tarot",
+        "info": "Default title for pages without specific titles (max 60 chars)"
+      },
+      {
+        "type": "textarea",
+        "id": "seo_description",
+        "label": "Default Meta Description",
+        "default": "Discover spiritual wellness, tarot readings, and mystical products at Midnight Magnolia. Your journey to inner wisdom starts here.",
+        "info": "Default description for pages without specific descriptions (max 160 chars)"
+      },
+      {
+        "type": "image_picker",
+        "id": "seo_image",
+        "label": "Default Share Image",
+        "info": "Default image for social media sharing (1200x630px recommended)"
+      }
+    ]
+  },
+  {
+    "name": "Analytics & Tracking",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Analytics"
+      },
+      {
+        "type": "text",
+        "id": "google_analytics_id",
+        "label": "Google Analytics ID",
+        "placeholder": "G-XXXXXXXXXX",
+        "info": "Google Analytics 4 measurement ID"
+      },
+      {
+        "type": "text",
+        "id": "facebook_pixel_id",
+        "label": "Facebook Pixel ID",
+        "placeholder": "000000000000000",
+        "info": "Facebook Pixel ID for conversion tracking"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_gdpr_compliance",
+        "label": "Enable GDPR Compliance",
+        "default": true,
+        "info": "Shows cookie consent banner for GDPR compliance"
+      }
+    ]
+  }
+  ,
+  {
+    "name": "Accessibility & Motion",
+    "settings": [
+      { "type": "header", "content": "Accessibility" },
+      { "type": "checkbox", "id": "dyslexia_friendly_default", "label": "Enable dyslexia-friendly defaults", "default": false, "info": "Increases line-height and letter/word spacing for readability" },
+      { "type": "header", "content": "Motion" },
+      { "type": "checkbox", "id": "enable_motion_toggle", "label": "Enable theme animations", "default": true, "info": "Disable to reduce animation and transitions across the theme" },
+      { "type": "checkbox", "id": "reduce_motion_default", "label": "Prefer reduced motion by default", "default": false, "info": "Forces minimal motion regardless of system preference" }
+    ]
+  }
+]

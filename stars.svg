@@ -1,0 +1,152 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <radialGradient id="starGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" style="stop-color:rgba(255,255,255,1);stop-opacity:1" />
+            <stop offset="70%" style="stop-color:rgba(246,213,92,0.8);stop-opacity:1" />
+            <stop offset="100%" style="stop-color:rgba(246,213,92,0);stop-opacity:0" />
+        </radialGradient>
+
+        <radialGradient id="starGlowPurple" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" style="stop-color:rgba(255,255,255,1);stop-opacity:1" />
+            <stop offset="70%" style="stop-color:rgba(159,122,234,0.8);stop-opacity:1" />
+            <stop offset="100%" style="stop-color:rgba(159,122,234,0);stop-opacity:0" />
+        </radialGradient>
+
+        <filter id="glow">
+            <feGaussianBlur stdDeviation="2" result="coloredBlur" />
+            <feMerge>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+
+        <filter id="sparkle">
+            <feGaussianBlur stdDeviation="1" result="coloredBlur" />
+            <feMerge>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
+    <!-- Large central star -->
+    <g class="main-star" transform="translate(100, 100)">
+        <circle cx="0" cy="0" r="15" fill="url(#starGlow)" opacity="0.4" />
+        <path d="M0,-12 L3,-3 L12,0 L3,3 L0,12 L-3,3 L-12,0 L-3,-3 Z"
+            fill="rgba(255,255,255,0.9)" filter="url(#glow)" />
+        <path d="M0,-8 L2,-2 L8,0 L2,2 L0,8 L-2,2 L-8,0 L-2,-2 Z"
+            fill="rgba(246,213,92,0.8)" />
+        <circle cx="0" cy="0" r="2" fill="rgba(255,255,255,1)" />
+    </g>
+
+    <!-- Medium stars -->
+    <g class="medium-stars">
+        <!-- Top left -->
+        <g transform="translate(40, 40)">
+            <circle cx="0" cy="0" r="8" fill="url(#starGlowPurple)" opacity="0.3" />
+            <path d="M0,-6 L2,-2 L6,0 L2,2 L0,6 L-2,2 L-6,0 L-2,-2 Z"
+                fill="rgba(255,255,255,0.8)" filter="url(#sparkle)" />
+            <circle cx="0" cy="0" r="1.5" fill="rgba(159,122,234,0.9)" />
+        </g>
+
+        <!-- Top right -->
+        <g transform="translate(160, 40)">
+            <circle cx="0" cy="0" r="8" fill="url(#starGlow)" opacity="0.3" />
+            <path d="M0,-6 L2,-2 L6,0 L2,2 L0,6 L-2,2 L-6,0 L-2,-2 Z"
+                fill="rgba(255,255,255,0.8)" filter="url(#sparkle)" />
+            <circle cx="0" cy="0" r="1.5" fill="rgba(246,213,92,0.9)" />
+        </g>
+
+        <!-- Bottom left -->
+        <g transform="translate(40, 160)">
+            <circle cx="0" cy="0" r="8" fill="url(#starGlow)" opacity="0.3" />
+            <path d="M0,-6 L2,-2 L6,0 L2,2 L0,6 L-2,2 L-6,0 L-2,-2 Z"
+                fill="rgba(255,255,255,0.8)" filter="url(#sparkle)" />
+            <circle cx="0" cy="0" r="1.5" fill="rgba(246,213,92,0.9)" />
+        </g>
+
+        <!-- Bottom right -->
+        <g transform="translate(160, 160)">
+            <circle cx="0" cy="0" r="8" fill="url(#starGlowPurple)" opacity="0.3" />
+            <path d="M0,-6 L2,-2 L6,0 L2,2 L0,6 L-2,2 L-6,0 L-2,-2 Z"
+                fill="rgba(255,255,255,0.8)" filter="url(#sparkle)" />
+            <circle cx="0" cy="0" r="1.5" fill="rgba(159,122,234,0.9)" />
+        </g>
+    </g>
+
+    <!-- Small twinkling stars -->
+    <g class="small-stars">
+        <!-- Scattered small stars -->
+        <circle cx="20" cy="80" r="2" fill="rgba(255,255,255,0.7)">
+            <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite" />
+        </circle>
+
+        <circle cx="180" cy="80" r="2" fill="rgba(246,213,92,0.7)">
+            <animate attributeName="opacity" values="0.5;1;0.5" dur="3s" repeatCount="indefinite" />
+        </circle>
+
+        <circle cx="80" cy="20" r="1.5" fill="rgba(159,122,234,0.7)">
+            <animate attributeName="opacity" values="0.4;1;0.4" dur="2.5s" repeatCount="indefinite" />
+        </circle>
+
+        <circle cx="120" cy="20" r="1.5" fill="rgba(255,255,255,0.6)">
+            <animate attributeName="opacity" values="0.3;0.9;0.3" dur="1.8s"
+                repeatCount="indefinite" />
+        </circle>
+
+        <circle cx="20" cy="120" r="2" fill="rgba(246,213,92,0.6)">
+            <animate attributeName="opacity" values="0.4;1;0.4" dur="2.2s" repeatCount="indefinite" />
+        </circle>
+
+        <circle cx="180" cy="120" r="1.5" fill="rgba(159,122,234,0.6)">
+            <animate attributeName="opacity" values="0.5;1;0.5" dur="2.8s" repeatCount="indefinite" />
+        </circle>
+
+        <circle cx="80" cy="180" r="2" fill="rgba(255,255,255,0.7)">
+            <animate attributeName="opacity" values="0.3;1;0.3" dur="2.4s" repeatCount="indefinite" />
+        </circle>
+
+        <circle cx="120" cy="180" r="1.5" fill="rgba(246,213,92,0.7)">
+            <animate attributeName="opacity" values="0.4;0.9;0.4" dur="1.9s"
+                repeatCount="indefinite" />
+        </circle>
+    </g>
+
+    <!-- Constellation lines -->
+    <g class="constellation-lines" opacity="0.3" stroke="rgba(255,255,255,0.4)" stroke-width="1"
+        fill="none">
+        <path d="M40,40 L100,100 L160,40" />
+        <path d="M40,160 L100,100 L160,160" />
+        <path d="M100,100 L80,20" />
+        <path d="M100,100 L120,20" />
+        <path d="M100,100 L20,80" />
+        <path d="M100,100 L180,80" />
+    </g>
+
+    <!-- Sparkle effects -->
+    <g class="sparkles" opacity="0.6">
+        <g transform="translate(60, 60)">
+            <animateTransform attributeName="transform" type="rotate"
+                values="0 60 60;360 60 60" dur="8s" repeatCount="indefinite" />
+            <path d="M0,-4 L1,0 L0,4 L-1,0 Z" fill="rgba(255,255,255,0.8)" />
+        </g>
+
+        <g transform="translate(140, 60)">
+            <animateTransform attributeName="transform" type="rotate"
+                values="0 140 60;-360 140 60" dur="6s" repeatCount="indefinite" />
+            <path d="M0,-3 L0.8,0 L0,3 L-0.8,0 Z" fill="rgba(246,213,92,0.7)" />
+        </g>
+
+        <g transform="translate(60, 140)">
+            <animateTransform attributeName="transform" type="rotate"
+                values="0 60 140;360 60 140" dur="10s" repeatCount="indefinite" />
+            <path d="M0,-3 L0.8,0 L0,3 L-0.8,0 Z" fill="rgba(159,122,234,0.7)" />
+        </g>
+
+        <g transform="translate(140, 140)">
+            <animateTransform attributeName="transform" type="rotate"
+                values="0 140 140;-360 140 140" dur="7s" repeatCount="indefinite" />
+            <path d="M0,-4 L1,0 L0,4 L-1,0 Z" fill="rgba(255,255,255,0.6)" />
+        </g>
+    </g>
+</svg>

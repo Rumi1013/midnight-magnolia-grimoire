@@ -1,0 +1,81 @@
+<svg width="400" height="50" viewBox="0 0 400 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <radialGradient id="moonGlow" cx="50%" cy="50%" r="60%">
+            <stop offset="0%" style="stop-color:rgba(246,213,92,0.8);stop-opacity:1" />
+            <stop offset="70%" style="stop-color:rgba(246,213,92,0.4);stop-opacity:1" />
+            <stop offset="100%" style="stop-color:rgba(246,213,92,0);stop-opacity:0" />
+        </radialGradient>
+
+        <filter id="moonGlow">
+            <feGaussianBlur stdDeviation="2" result="coloredBlur" />
+            <feMerge>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
+    <!-- New Moon -->
+    <g class="new-moon" transform="translate(25, 25)">
+        <circle cx="0" cy="0" r="18" fill="url(#moonGlow)" opacity="0.3" />
+        <circle cx="0" cy="0" r="12" fill="rgba(26,26,46,0.9)" stroke="rgba(246,213,92,0.3)"
+            stroke-width="1" />
+    </g>
+
+    <!-- Waxing Crescent -->
+    <g class="waxing-crescent" transform="translate(75, 25)">
+        <circle cx="0" cy="0" r="18" fill="url(#moonGlow)" opacity="0.3" />
+        <circle cx="0" cy="0" r="12" fill="rgba(26,26,46,0.9)" stroke="rgba(246,213,92,0.3)"
+            stroke-width="1" />
+        <path d="M0,-12 A12,12 0 0,1 0,12 A6,6 0 0,0 0,-12 Z" fill="rgba(246,213,92,0.8)"
+            filter="url(#moonGlow)" />
+    </g>
+
+    <!-- First Quarter -->
+    <g class="first-quarter" transform="translate(125, 25)">
+        <circle cx="0" cy="0" r="18" fill="url(#moonGlow)" opacity="0.3" />
+        <circle cx="0" cy="0" r="12" fill="rgba(26,26,46,0.9)" stroke="rgba(246,213,92,0.3)"
+            stroke-width="1" />
+        <path d="M0,-12 A12,12 0 0,1 0,12 Z" fill="rgba(246,213,92,0.8)" filter="url(#moonGlow)" />
+    </g>
+
+    <!-- Waxing Gibbous -->
+    <g class="waxing-gibbous" transform="translate(175, 25)">
+        <circle cx="0" cy="0" r="18" fill="url(#moonGlow)" opacity="0.3" />
+        <circle cx="0" cy="0" r="12" fill="rgba(26,26,46,0.9)" stroke="rgba(246,213,92,0.3)"
+            stroke-width="1" />
+        <path d="M0,-12 A12,12 0 0,1 0,12 A4,4 0 0,1 0,-12 Z" fill="rgba(246,213,92,0.8)"
+            filter="url(#moonGlow)" />
+    </g>
+
+    <!-- Full Moon -->
+    <g class="full-moon" transform="translate(225, 25)">
+        <circle cx="0" cy="0" r="18" fill="url(#moonGlow)" opacity="0.5" />
+        <circle cx="0" cy="0" r="12" fill="rgba(246,213,92,0.9)" filter="url(#moonGlow)" />
+        <circle cx="0" cy="0" r="10" fill="none" stroke="rgba(246,213,92,0.6)" stroke-width="0.5" />
+        <circle cx="0" cy="0" r="8" fill="none" stroke="rgba(246,213,92,0.4)" stroke-width="0.5" />
+    </g>
+
+    <!-- Waning Gibbous -->
+    <g class="waning-gibbous" transform="translate(275, 25)">
+        <circle cx="0" cy="0" r="18" fill="url(#moonGlow)" opacity="0.3" />
+        <circle cx="0" cy="0" r="12" fill="rgba(246,213,92,0.8)" filter="url(#moonGlow)" />
+        <path d="M0,-12 A4,4 0 0,1 0,12 A12,12 0 0,1 0,-12 Z" fill="rgba(26,26,46,0.9)" />
+    </g>
+
+    <!-- Last Quarter -->
+    <g class="last-quarter" transform="translate(325, 25)">
+        <circle cx="0" cy="0" r="18" fill="url(#moonGlow)" opacity="0.3" />
+        <circle cx="0" cy="0" r="12" fill="rgba(246,213,92,0.8)" filter="url(#moonGlow)" />
+        <path d="M0,-12 A12,12 0 0,1 0,12 Z" fill="rgba(26,26,46,0.9)" />
+    </g>
+
+    <!-- Waning Crescent -->
+    <g class="waning-crescent" transform="translate(375, 25)">
+        <circle cx="0" cy="0" r="18" fill="url(#moonGlow)" opacity="0.3" />
+        <circle cx="0" cy="0" r="12" fill="rgba(26,26,46,0.9)" stroke="rgba(246,213,92,0.3)"
+            stroke-width="1" />
+        <path d="M0,-12 A6,6 0 0,1 0,12 A12,12 0 0,1 0,-12 Z" fill="rgba(246,213,92,0.8)"
+            filter="url(#moonGlow)" />
+    </g>
+</svg>

@@ -1,0 +1,43 @@
+# Files to Move Out of Repository (for Local Storage)
+
+## Test Files
+- midnight-magnolia-website-main/app/api/webhooks/test/route.ts
+- midnight-magnolia-website-main/app/api/shopify/test/route.ts
+- midnight-magnolia-website-main/app/dashboard/shopify/webhooks/test/page.tsx
+- midnight-magnolia-website-main/app/dashboard/shopify/webhooks/test/WebhookTestingClient.tsx
+
+## Spreadsheets
+- MidnightMagnolia_KeywordBank.xlsx
+- Midnight_Magnolia_Income_and_SEO_Tracker.xlsx
+
+## CSV
+- Midnight_Magnolia_Tarot_Template.csv
+
+## DOCX
+- Midnight_Magnolia_Tarot_Template.docx
+
+## ZIP Archives
+- midnight-magnolia-website-main 2.zip
+- midnight-magnolia-theme.zip
+- Midnight_Magnolia_Tarot_Dashboard.zip
+
+## Documentation (optional)
+- midnight-magnolia-theme/SECURITY_IMPLEMENTATION.md
+- MAINTENANCE_GUIDELINES.md
+- README.md
+- IMPROVEMENTS_SUMMARY.md
+- System_PatreonTiers.md
+- CSS_IMPROVEMENTS_DOCUMENTATION.md
+- midnight-magnolia-website-main/README.md
+- Midnight_Magnolia_Tarot_Dashboard.md
+
+## Next.js/React/TSX Components (not used in Shopify theme)
+- All .tsx, .jsx files in midnight-magnolia-website-main/components, app, dashboard, etc.
+
+## Other Unused Assets
+- Any images, scripts, or files not referenced in midnight-magnolia-theme
+
+---
+Keep all design and product assets referenced in the Shopify theme, including:
+- Liquid templates, CSS, JS, and assets in midnight-magnolia-theme/
+- Images used for logo, hero, product, collection, and backgrounds

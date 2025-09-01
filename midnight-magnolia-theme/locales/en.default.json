@@ -1,0 +1,358 @@
+{
+  "general": {
+    "meta": {
+      "tags": "Tagged \"{{ tags }}\"",
+      "page": "Page {{ page }}"
+    },
+    "404": {
+      "title": "Page Not Found",
+      "subtext": "The page you're looking for doesn't exist.",
+      "link": "Return to Home"
+    },
+    "accessibility": {
+      "skip_to_content": "Skip to main content",
+      "close": "Close",
+      "previous": "Previous",
+      "next": "Next",
+      "loading": "Loading...",
+      "selection_help": "Press Space or Enter to select",
+      "selected": "Selected"
+    },
+    "security": {
+      "csrf_error": "Security token is invalid. Please refresh and try again.",
+      "rate_limit_error": "Too many requests. Please wait before trying again.",
+      "invalid_input": "Invalid input detected. Please check your entry.",
+      "session_expired": "Your session has expired. Please log in again.",
+      "access_denied": "Access denied. You don't have permission for this action."
+    },
+    "errors": {
+      "generic": "An error occurred. Please try again.",
+      "network": "Network error. Please check your connection.",
+      "timeout": "Request timed out. Please try again.",
+      "validation": "Please check your input and try again.",
+      "required_field": "This field is required",
+      "invalid_email": "Please enter a valid email address",
+      "invalid_phone": "Please enter a valid phone number"
+    },
+    "success": {
+      "form_submitted": "Form submitted successfully!",
+      "saved": "Changes saved successfully",
+      "updated": "Updated successfully"
+    },
+    "gdpr": {
+      "cookie_message": "We use cookies to enhance your experience. By continuing to visit this site you agree to our use of cookies.",
+      "accept": "Accept Cookies",
+      "privacy_policy": "Privacy Policy",
+      "cookie_policy": "Cookie Policy"
+    }
+  },
+  "layout": {
+    "header": {
+      "menu": "Menu",
+      "cart": "Cart",
+      "search": "Search",
+      "account": "Account",
+      "logo_alt": "Midnight Magnolia Logo"
+    },
+    "footer": {
+      "newsletter_title": "Stay Connected",
+      "newsletter_subtitle": "Subscribe for spiritual insights and exclusive offers",
+      "social_title": "Follow Us",
+      "links_title": "Quick Links",
+      "legal_title": "Legal",
+      "copyright": "© {{ year }} {{ shop_name }}. All rights reserved."
+    },
+    "navigation": {
+      "home": "Home",
+      "shop": "Shop",
+      "about": "About",
+      "blog": "Blog",
+      "contact": "Contact",
+      "collections": "Collections",
+      "products": "Products"
+    }
+  },
+  "cart": {
+    "general": {
+      "title": "Your Cart",
+      "empty": "Your cart is currently empty",
+      "continue_shopping": "Continue Shopping",
+      "checkout": "Checkout",
+      "subtotal": "Subtotal",
+      "taxes_and_shipping": "Taxes and shipping calculated at checkout",
+      "update": "Update Cart",
+      "note": "Order special instructions",
+      "note_placeholder": "Special instructions for your order..."
+    },
+    "items": {
+      "remove": "Remove",
+      "quantity": "Quantity",
+      "increase": "Increase quantity",
+      "decrease": "Decrease quantity",
+      "price": "Price",
+      "total": "Total",
+      "product": "Product",
+      "sku": "SKU"
+    },
+    "notifications": {
+      "added": "Added to cart successfully!",
+      "removed": "Removed from cart",
+      "updated": "Cart updated",
+      "error": "Failed to update cart. Please try again.",
+      "limit_reached": "Maximum quantity reached for this item"
+    }
+  },
+  "products": {
+    "general": {
+      "title": "Products",
+      "price": "Price",
+      "sale_price": "Sale Price",
+      "regular_price": "Regular Price",
+      "save": "Save {{ amount }}",
+      "sold_out": "Sold Out",
+      "unavailable": "Unavailable",
+      "add_to_cart": "Add to Cart",
+      "view_details": "View Details",
+      "quick_view": "Quick View",
+      "compare": "Compare",
+      "wishlist": "Add to Wishlist"
+    },
+    "form": {
+      "variant": "Variant",
+      "quantity": "Quantity",
+      "add_to_cart": "Add to Cart",
+      "buy_now": "Buy Now",
+      "preorder": "Pre-order",
+      "notify_when_available": "Notify When Available"
+    },
+    "badges": {
+      "sale": "Sale",
+      "new": "New",
+      "bestseller": "Bestseller",
+      "limited": "Limited Edition",
+      "digital": "Digital",
+      "coming_soon": "Coming Soon"
+    },
+    "details": {
+      "description": "Description",
+      "ingredients": "Ingredients",
+      "directions": "Directions",
+      "reviews": "Reviews",
+      "shipping": "Shipping Information",
+      "returns": "Returns Policy",
+      "size_guide": "Size Guide"
+    }
+  },
+  "collections": {
+    "general": {
+      "title": "Collections",
+      "no_products": "No products found",
+      "view_all": "View All",
+      "sort_by": "Sort by",
+      "filter": "Filter",
+      "clear_filters": "Clear Filters",
+      "results_count": "{{ count }} product",
+      "results_count_plural": "{{ count }} products"
+    },
+    "sorting": {
+      "featured": "Featured",
+      "best_selling": "Best Selling",
+      "alphabetically_az": "Alphabetically, A-Z",
+      "alphabetically_za": "Alphabetically, Z-A",
+      "price_low_to_high": "Price, low to high",
+      "price_high_to_low": "Price, high to low",
+      "date_new_to_old": "Date, new to old",
+      "date_old_to_new": "Date, old to new"
+    },
+    "filters": {
+      "price": "Price",
+      "vendor": "Brand",
+      "type": "Product Type",
+      "size": "Size",
+      "color": "Color",
+      "material": "Material",
+      "availability": "Availability"
+    }
+  },
+  "search": {
+    "general": {
+      "title": "Search Results",
+      "placeholder": "Search products, articles, and more...",
+      "submit": "Search",
+      "no_results": "No results found for \"{{ terms }}\"",
+      "results_count": "{{ count }} result for \"{{ terms }}\"",
+      "results_count_plural": "{{ count }} results for \"{{ terms }}\"",
+      "suggestions": "Suggestions",
+      "popular": "Popular Searches"
+    },
+    "filters": {
+      "all": "All",
+      "products": "Products",
+      "articles": "Articles",
+      "pages": "Pages"
+    }
+  },
+  "customer": {
+    "account": {
+      "title": "My Account",
+      "welcome": "Welcome back, {{ first_name }}!",
+      "orders": "Order History",
+      "addresses": "Addresses",
+      "profile": "Profile",
+      "logout": "Log Out",
+      "no_orders": "You haven't placed any orders yet"
+    },
+    "login": {
+      "title": "Login",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign In",
+      "forgot_password": "Forgot your password?",
+      "create_account": "Create Account",
+      "guest_checkout": "Continue as Guest"
+    },
+    "register": {
+      "title": "Create Account",
+      "first_name": "First Name",
+      "last_name": "Last Name",
+      "email": "Email",
+      "password": "Password",
+      "password_confirm": "Confirm Password",
+      "submit": "Create Account",
+      "already_have_account": "Already have an account?"
+    },
+    "orders": {
+      "title": "Order History",
+      "order_number": "Order #{{ number }}",
+      "date": "Date",
+      "status": "Status",
+      "total": "Total",
+      "view_order": "View Order",
+      "reorder": "Reorder",
+      "track_order": "Track Order"
+    },
+    "addresses": {
+      "title": "Address Book",
+      "add_new": "Add New Address",
+      "edit": "Edit",
+      "delete": "Delete",
+      "set_default": "Set as Default",
+      "default": "Default Address"
+    }
+  },
+  "contact": {
+    "form": {
+      "title": "Contact Us",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "subject": "Subject",
+      "message": "Message",
+      "submit": "Send Message",
+      "success": "Thank you for your message. We'll get back to you soon!",
+      "error": "Sorry, your message couldn't be sent. Please try again."
+    },
+    "info": {
+      "address": "Address",
+      "phone": "Phone",
+      "email": "Email",
+      "hours": "Store Hours"
+    }
+  },
+  "newsletter": {
+    "title": "Stay Updated",
+    "subtitle": "Subscribe to receive spiritual insights and exclusive offers",
+    "email_placeholder": "Enter your email address",
+    "submit": "Subscribe",
+    "success": "Thank you for subscribing!",
+    "error": "Subscription failed. Please try again.",
+    "already_subscribed": "You're already subscribed to our newsletter"
+  },
+  "blog": {
+    "general": {
+      "title": "Blog",
+      "read_more": "Read More",
+      "share": "Share",
+      "posted_by": "Posted by {{ author }}",
+      "posted_on": "Posted on {{ date }}",
+      "tags": "Tags",
+      "categories": "Categories",
+      "no_articles": "No articles found"
+    },
+    "comments": {
+      "title": "Comments",
+      "leave_comment": "Leave a Comment",
+      "name": "Name",
+      "email": "Email",
+      "comment": "Comment",
+      "submit": "Post Comment",
+      "success": "Your comment has been posted!",
+      "moderation": "Your comment is awaiting moderation"
+    }
+  },
+  "gift_cards": {
+    "title": "Gift Card",
+    "subtext": "Here's your gift card!",
+    "disabled": "Disabled",
+    "expired": "Expired on {{ expiry }}",
+    "expires_on": "Expires on {{ expiry }}",
+    "redeem": "Use this code at checkout to redeem your gift card",
+    "shop_link": "Start Shopping",
+    "print": "Print Gift Card",
+    "remaining_html": "{{ balance }} left",
+    "add_to_apple_wallet": "Add to Apple Wallet"
+  },
+  "date_formats": {
+    "month_day_year": "%B %d, %Y",
+    "month_day": "%B %d",
+    "abbreviated_date": "%b %d, %Y"
+  },
+  "shopify": {
+    "links": {
+      "powered_by_shopify": "Powered by Shopify"
+    },
+    "checkout": {
+      "computing": "Computing...",
+      "loading": "Loading..."
+    }
+  },
+  "social": {
+    "general": {
+      "follow_us": "Follow Us",
+      "share": "Share",
+      "share_on_facebook": "Share on Facebook",
+      "share_on_twitter": "Share on Twitter",
+      "share_on_pinterest": "Share on Pinterest",
+      "share_via_email": "Share via Email",
+      "copy_link": "Copy Link"
+    }
+  },
+  "midnight_magnolia": {
+    "hero": {
+      "title": "Welcome to Midnight Magnolia",
+      "subtitle": "Discover your spiritual path with our mystical collection",
+      "cta_primary": "Enter the Garden",
+      "cta_secondary": "Learn More"
+    },
+    "collections": {
+      "tarot": "Tarot & Oracle Cards",
+      "crystals": "Crystals & Gemstones",
+      "candles": "Sacred Candles",
+      "journals": "Spiritual Journals",
+      "rituals": "Ritual Supplies"
+    },
+    "about": {
+      "title": "Our Spiritual Journey",
+      "subtitle": "Guiding you toward inner wisdom and mystical discovery"
+    },
+    "testimonials": {
+      "title": "What Our Community Says",
+      "read_more": "Read All Reviews"
+    },
+    "security_notices": {
+      "secure_checkout": "🔒 Secure Checkout - Your information is protected",
+      "encrypted_connection": "All data transmitted through encrypted connections",
+      "privacy_protected": "Your privacy is our priority"
+    }
+  }
+}

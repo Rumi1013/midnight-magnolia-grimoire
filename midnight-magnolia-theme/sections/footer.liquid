@@ -1,0 +1,162 @@
+{% comment %}
+  Midnight Magnolia Footer Section - Secure & Mystical
+  - Customizable logo, about, menus, social, newsletter, payments
+  - Uses locale keys where available; safe fallbacks otherwise
+{% endcomment %}
+
+<footer class="footer" data-section-id="{{ section.id }}" data-section-type="footer">
+  <div class="container">
+    <div class="footer__main">
+      <!-- Brand -->
+      <div class="footer__brand">
+        <a href="{{ routes.root_url }}" class="footer__logo" aria-label="{{ 'layout.footer.logo_alt' | t | escape }}">
+          {% if section.settings.logo != blank %}
+            <img src="{{ section.settings.logo | img_url: '200x' }}" alt="{{ shop.name | escape }}" height="40" loading="lazy" decoding="async">
+          {% else %}
+            <img src="{{ 'midnight-magnolia-logo.jpg' | asset_url }}" alt="{{ shop.name | escape }}" height="40" loading="lazy" decoding="async">
+          {% endif %}
+        </a>
+        {% if section.settings.about_text != blank %}
+          <div class="footer__about user-content">{{ section.settings.about_text }}</div>
+        {% else %}
+          <p class="footer__about">{{ 'newsletter.subtitle' | t | default: 'Spiritual wellness, tarot, and mystical products for your journey.' }}</p>
+        {% endif %}
+      </div>
+
+      <!-- Newsletter Signup -->
+      {% if section.settings.enable_newsletter %}
+      <div class="footer__newsletter">
+        <h4>{{ section.settings.newsletter_heading | default: ('newsletter.title' | t) }}</h4>
+        {% form 'customer', class: 'footer__newsletter-form', id: 'FooterNewsletterForm' %}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          <label for="FooterNewsletterEmail" class="visually-hidden">{{ 'newsletter.email_placeholder' | t }}</label>
+          <input
+            type="email"
+            id="FooterNewsletterEmail"
+            name="contact[email]"
+            class="form-input"
+            placeholder="{{ 'newsletter.email_placeholder' | t }}"
+            required
+            maxlength="254"
+            autocomplete="email"
+          >
+          <button type="submit" class="btn btn--primary">{{ 'newsletter.submit' | t }}</button>
+
+          {% if form.posted_successfully? %}
+            <p class="footer__note" role="status">{{ 'newsletter.success' | t }}</p>
+          {% endif %}
+          {% if form.errors %}
+            <p class="footer__note" role="alert">{{ 'newsletter.error' | t }}</p>
+          {% endif %}
+        {% endform %}
+      </div>
+      {% endif %}
+
+      <!-- Social Links -->
+      {% if section.settings.show_social %}
+      <div class="footer__social">
+        <h4>{{ 'layout.footer.social_title' | t | default: 'Follow Us' }}</h4>
+        <ul class="footer__social-list">
+          {% if settings.social_facebook %}<li><a href="{{ settings.social_facebook }}" target="_blank" rel="noopener noreferrer">Facebook</a></li>{% endif %}
+          {% if settings.social_instagram %}<li><a href="{{ settings.social_instagram }}" target="_blank" rel="noopener noreferrer">Instagram</a></li>{% endif %}
+          {% if settings.social_twitter %}<li><a href="{{ settings.social_twitter }}" target="_blank" rel="noopener noreferrer">Twitter</a></li>{% endif %}
+          {% if settings.social_pinterest %}<li><a href="{{ settings.social_pinterest }}" target="_blank" rel="noopener noreferrer">Pinterest</a></li>{% endif %}
+          {% if settings.social_youtube %}<li><a href="{{ settings.social_youtube }}" target="_blank" rel="noopener noreferrer">YouTube</a></li>{% endif %}
+        </ul>
+      </div>
+      {% endif %}
+
+      <!-- Menus -->
+      <div class="footer__links">
+        {% if section.settings.menu_quicklinks != blank and linklists[section.settings.menu_quicklinks].links.size > 0 %}
+          <div class="footer__menu">
+            <h4>{{ 'layout.footer.links_title' | t | default: 'Quick Links' }}</h4>
+            <ul class="footer__policy-list">
+              {% for link in linklists[section.settings.menu_quicklinks].links %}
+                <li><a href="{{ link.url | escape }}">{{ link.title | escape }}</a></li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+
+        {% if section.settings.menu_policies != blank and linklists[section.settings.menu_policies].links.size > 0 %}
+          <div class="footer__menu">
+            <h4>{{ 'layout.footer.legal_title' | t | default: 'Legal' }}</h4>
+            <ul class="footer__policy-list">
+              {% for link in linklists[section.settings.menu_policies].links %}
+                <li><a href="{{ link.url | escape }}">{{ link.title | escape }}</a></li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    {% if section.settings.show_payment_icons and shop.enabled_payment_types.size > 0 %}
+      <div class="footer__payments">
+        <ul class="payment-icons" aria-label="Accepted payment methods">
+          {% for type in shop.enabled_payment_types %}
+            <li class="payment-icons__item">{{ type | payment_type_svg_tag }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+
+    <div class="footer__copyright">
+      {% assign current_year = 'now' | date: '%Y' %}
+      <p>{{ 'layout.footer.copyright' | t: year: current_year, shop_name: shop.name }}</p>
+      <p class="footer__small">{{ 'shopify.links.powered_by_shopify' | t }}</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+.footer {
+  background: var(--color-midnight-navy);
+  color: var(--color-warm-cream);
+  padding: var(--section-padding) 0;
+  border-top: 1px solid var(--color-warm-gold);
+}
+.footer__main {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xl);
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.footer__brand, .footer__newsletter, .footer__social, .footer__links {
+  flex: 1 1 240px;
+  min-width: 240px;
+}
+.footer__logo img { height: 40px; }
+.footer__about { margin-top: var(--space-sm); font-size: 1rem; }
+.footer__newsletter-form { display: flex; gap: var(--space-sm); margin-top: var(--space-sm); }
+.footer__social-list, .footer__policy-list, .payment-icons { list-style: none; padding: 0; margin: 0; }
+.footer__social-list li, .footer__policy-list li { margin-bottom: var(--space-xs); }
+.footer__social-list a, .footer__policy-list a { color: var(--color-golden-yellow); text-decoration: none; transition: color var(--transition-base); }
+.footer__social-list a:hover, .footer__policy-list a:hover { color: var(--color-warm-gold); }
+.payment-icons { display: flex; gap: var(--space-md); align-items: center; margin-top: var(--space-md); flex-wrap: wrap; }
+.payment-icons__item svg { height: 24px; width: auto; fill: var(--color-warm-cream); opacity: 0.9; }
+.footer__payments { margin-top: var(--space-md); }
+.footer__note { margin-top: var(--space-sm); font-size: 0.9rem; color: var(--color-warm-cream); }
+.footer__small { opacity: 0.7; font-size: 0.85rem; margin-top: var(--space-xs); }
+.footer__copyright { text-align: center; margin-top: var(--space-lg); font-size: 0.9rem; color: var(--color-warm-cream); }
+@media (max-width: 768px) { .footer__main { flex-direction: column; gap: var(--space-lg); } }
+</style>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    { "type": "header", "content": "Footer Settings" },
+    { "type": "image_picker", "id": "logo", "label": "Logo (optional)" },
+    { "type": "richtext", "id": "about_text", "label": "About text", "default": "<p>Spiritual wellness, tarot, and mystical products for your journey.</p>" },
+    { "type": "checkbox", "id": "enable_newsletter", "label": "Enable newsletter signup", "default": true },
+    { "type": "text", "id": "newsletter_heading", "label": "Newsletter heading", "default": "Stay Updated" },
+    { "type": "checkbox", "id": "show_social", "label": "Show social links", "default": true },
+    { "type": "link_list", "id": "menu_quicklinks", "label": "Quick links menu" },
+    { "type": "link_list", "id": "menu_policies", "label": "Policies menu" },
+    { "type": "checkbox", "id": "show_payment_icons", "label": "Show payment icons", "default": true }
+  ]
+}
+{% endschema %}

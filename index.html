@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html class="no-js" lang="{% if request.locale.iso_code %}{{ request.locale.iso_code }}{% else %}en{% endif %}">
+<head>
+    <!-- ===============================================
+         MIDNIGHT MAGNOLIA THEME - OPTIMIZED TEMPLATE
+         Performance-first, accessible, and secure
+         =============================================== -->
+
+    <!-- Critical Meta Tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Primary Meta Information -->
+    <title>{% if page_title %}{{ page_title }} - {% endif %}{{ shop.name }} - Technology Empowerment & Southern Gothic Design</title>
+    <meta name="description" content="{% if page_description %}{{ page_description | escape }}{% else %}Transforming art, design, and ancestral wisdom into sustainable income streams. Empowering Black women with AI literacy, digital tools, and business strategies for career advancement.{% endif %}">
+
+    <!-- Canonical URL -->
+    {% if canonical_url != blank %}
+        <link rel="canonical" href="{{ canonical_url }}">
+    {% endif %}
+
+    <!-- Favicon and Icons -->
+    <link rel="icon" href="{{ 'magnolia-flower.svg' | asset_url }}" type="image/svg+xml">
+    {% if settings.favicon != blank %}
+        <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+        <link rel="apple-touch-icon" href="{{ settings.favicon | image_url: width: 180, height: 180 }}">
+        <link rel="icon" sizes="192x192" href="{{ settings.favicon | image_url: width: 192, height: 192 }}">
+        <link rel="icon" sizes="512x512" href="{{ settings.favicon | image_url: width: 512, height: 512 }}">
+    {% endif %}
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:site_name" content="{{ shop.name }}">
+    <meta property="og:url" content="{{ canonical_url | default: shop.url }}">
+    <meta property="og:title" content="{% if page_title %}{{ page_title }} - {% endif %}{{ shop.name }}">
+    <meta property="og:type" content="website">
+    <meta property="og:description" content="{% if page_description %}{{ page_description | escape }}{% else %}Empowering Black women with AI literacy and digital tools for career advancement{% endif %}">
+    {% if settings.social_image %}
+        <meta property="og:image" content="{{ settings.social_image | image_url: width: 1200, height: 630 }}">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+    {% endif %}
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% if page_title %}{{ page_title }} - {% endif %}{{ shop.name }}">
+    <meta name="twitter:description" content="{% if page_description %}{{ page_description | escape }}{% else %}Empowering Black women with AI literacy and digital tools{% endif %}">
+
+    <!-- Preconnect to External Domains -->
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+    {% unless settings.type_header_font.system? and settings.type_body_font.system? %}
+        <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+    {% endunless %}
+
+    <!-- DNS Prefetch for Performance -->
+    <link rel="dns-prefetch" href="https://monorail-edge.shopifysvc.com">
+
+    <!-- Critical CSS - Inline for Performance -->
+    <style>
+        /* Critical Above-the-fold Styles */
+        html { scroll-behavior: smooth; }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #f7f3e9;
+            background: linear-gradient(135deg, #1a1a2e 0%, #2d1b69 50%, #1a1a2e 100%);
+            overflow-x: hidden;
+        }
+        .skip-to-content-link {
+            position: absolute;
+            top: -40px;
+            left: 6px;
+            background: #1a1a2e;
+            color: #f7f3e9;
+            padding: 8px;
+            text-decoration: none;
+            border-radius: 4px;
+            z-index: 10000;
+            transition: top 0.3s;
+        }
+        .skip-to-content-link:focus {
+            top: 6px;
+        }
+        .loading-fallback {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        /* Prevent layout shift */
+        .hero-section { min-height: 100vh; }
+        .nav-container { min-height: 80px; }
+    </style>
+
+    <!-- Font Preloading for Performance -->
+    {% unless settings.type_body_font.system? %}
+        <link rel="preload" as="font" href="{{ settings.type_body_font | font_url }}" type="font/woff2" crossorigin>
+    {% endunless %}
+    {% unless settings.type_header_font.system? %}
+        <link rel="preload" as="font" href="{{ settings.type_header_font | font_url }}" type="font/woff2" crossorigin>
+    {% endunless %}
+    {% unless settings.type_accent_font.system? %}
+        <link rel="preload" as="font" href="{{ settings.type_accent_font | font_url }}" type="font/woff2" crossorigin>
+    {% endunless %}
+
+    <!-- Liquid Template Variables -->
+    {% liquid
+        assign body_font_bold = settings.type_body_font | font_modify: 'weight', 'bold'
+        assign body_font_italic = settings.type_body_font | font_modify: 'style', 'italic'
+        assign body_font_bold_italic = body_font_bold | font_modify: 'style', 'italic'
+        assign accent_font_bold = settings.type_accent_font | font_modify: 'weight', 'bold'
+    %}
+
+    <!-- CSS Resources - Optimized Loading -->
+    {{ 'base.css' | asset_url | stylesheet_tag: preload: true }}
+    {{ 'theme.css' | asset_url | stylesheet_tag }}
+    <link rel="stylesheet" href="{{ 'grimoire.css' | asset_url }}" media="print" onload="this.media='all'">
+    {{ 'shopify-theme-custom.css' | asset_url | stylesheet_tag }}
+
+    <!-- Theme Meta Tags and Schema -->
+    {% render 'meta-tags' %}
+
+    <!-- Performance and Error Monitoring -->
+    <script>
+        // Performance monitoring
+        if (window.performance && window.performance.mark) {
+            window.performance.mark('head-start');
+        }
+
+        // Error handling with graceful degradation
+        window.addEventListener('error', function(e) {
+            if (console && console.warn) {
+                console.warn('Resource loading error:', e.filename || 'unknown', e.message || 'unknown error');
+            }
+        });
+
+        // Initialize theme namespace
+        window.theme = window.theme || {};
+    </script>
+
+    <!-- Theme Configuration Data (JSON-safe) -->
+    <script type="application/json" id="theme-config">
+    {
+        "shopUrl": {{ request.origin | json }},
+        "routes": {
+            "cart_add_url": {{ routes.cart_add_url | json }},
+            "cart_change_url": {{ routes.cart_change_url | json }},
+            "cart_update_url": {{ routes.cart_update_url | json }},
+            "cart_url": {{ routes.cart_url | json }},
+            "predictive_search_url": {{ routes.predictive_search_url | json }}
+        },
+        "strings": {
+            "cart": {
+                "error": {{ 'sections.cart.cart_error' | t | json }},
+                "quantityError": {{ 'sections.cart.cart_quantity_error_html' | t: quantity: '[quantity]' | json }}
+            },
+            "products": {
+                "addToCart": {{ 'products.product.add_to_cart' | t | json }},
+                "soldOut": {{ 'products.product.sold_out' | t | json }},
+                "unavailable": {{ 'products.product.unavailable' | t | json }},
+                "unavailableWithOption": {{ 'products.product.value_unavailable' | t: option_value: '[value]' | json }}
+            },
+            "accessibility": {
+                "imageAvailable": {{ 'products.product.media.image_available' | t: index: '[index]' | json }},
+                "shareSuccess": {{ 'general.share.success_message' | t | json }},
+                "pauseSlideshow": {{ 'sections.slideshow.pause_slideshow' | t | json }},
+                "playSlideshow": {{ 'sections.slideshow.play_slideshow' | t | json }},
+                "refreshPage": {{ 'accessibility.refresh_page' | t | json }},
+                "newWindow": {{ 'accessibility.link_messages.new_window' | t | json }}
+            }
+        },
+        "settings": {
+            "cartType": {{ settings.cart_type | json }},
+            "predictiveSearchEnabled": {{ settings.predictive_search_enabled | default: false | json }},
+            "animationsHover": {{ settings.animations_hover_elements | default: "none" | json }}
+        }
+    }
+    </script>
+
+    <!-- Theme Configuration Loader -->
+    <script>
+        // Load theme configuration from JSON
+        (function() {
+            try {
+                var configElement = document.getElementById('theme-config');
+                if (configElement) {
+                    var config = JSON.parse(configElement.textContent);
+                    window.theme = Object.assign(window.theme || {}, config);
+
+                    // Legacy support for existing code
+                    window.shopUrl = window.theme.shopUrl;
+                    window.routes = window.theme.routes;
+                    window.cartStrings = window.theme.strings.cart;
+                    window.variantStrings = window.theme.strings.products;
+                    window.accessibilityStrings = window.theme.strings.accessibility;
+                }
+            } catch (e) {
+                if (console && console.error) {
+                    console.error('Failed to load theme configuration:', e);
+                }
+            }
+        })();
+    </script>
+
+    <!-- Shopify Content for Header -->
+    {{ content_for_header }}
+
+    <!-- JavaScript Resources - Optimized Loading -->
+    <script src="{{ 'global.js' | asset_url }}" defer></script>
+    {% if settings.predictive_search_enabled %}
+        <script src="{{ 'predictive-search.js' | asset_url }}" defer></script>
+    {% endif %}
+    <script src="{{ 'celestial-animations.js' | asset_url }}" defer></script>
+
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": {{ shop.name | json }},
+        "url": {{ shop.url | json }},
+        "description": {{ shop.description | default: "Technology Empowerment & Southern Gothic Design" | json }},
+        "sameAs": [
+            "https://instagram.com/midnightmagnolia",
+            "https://linkedin.com/company/midnight-magnolia"
+        ]
+    }
+    </script>
+</head>
+
+<body class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}" data-template="{{ template.name }}">
+    <!-- Skip to Content Link for Accessibility -->
+    <a class="skip-to-content-link" href="#MainContent">
+        {{ 'accessibility.skip_to_text' | t | default: 'Skip to content' }}
+    </a>
+
+    <!-- Loading Fallback for No-JS Users -->
+    <noscript>
+        <div class="loading-fallback">
+            <h1>{{ shop.name }}</h1>
+            <p>{{ 'general.accessibility.javascript_disabled' | t | default: 'Please enable JavaScript for the best experience.' }}</p>
+        </div>
+    </noscript>
+
+    <!-- Cart Drawer (Conditional Rendering) -->
+    {% if settings.cart_type == 'drawer' %}
+        {% render 'cart-drawer' %}
+    {% endif %}
+
+    <!-- Theme-specific Elements -->
+    {% render 'floating-elements' %}
+    {% render 'moon-phase-indicator' %}
+
+    <!-- Header Section -->
+    {% section 'header' %}
+
+    <!-- Navigation (Standalone for better control) -->
+    <nav class="grimoire-nav" role="navigation" aria-label="Main navigation">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <img src="{{ 'magnolia-flower.svg' | asset_url }}" alt="Magnolia Flower Logo" class="nav-logo" width="40" height="40">
+                <div class="nav-brand-text">
+                    <span class="nav-title">Midnight Magnolia</span>
+                    <span class="nav-subtitle">Technology & Design</span>
+                </div>
+            </div>
+
+            <ul class="nav-menu" role="menubar">
+                <li role="none"><a href="#home" class="nav-link" role="menuitem">Home</a></li>
+                <li role="none"><a href="#products" class="nav-link" role="menuitem">Digital Products</a></li>
+                <li role="none"><a href="#services" class="nav-link" role="menuitem">Services</a></li>
+                <li role="none"><a href="#ai-tools" class="nav-link" role="menuitem">AI & Tech</a></li>
+                <li role="none"><a href="#events" class="nav-link" role="menuitem">Events</a></li>
+                <li role="none"><a href="#about" class="nav-link" role="menuitem">About</a></li>
+                <li role="none"><a href="#contact" class="nav-link" role="menuitem">Contact</a></li>
+            </ul>
+
+            <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-menu" aria-label="Toggle navigation menu">
+                <span class="nav-toggle-line"></span>
+                <span class="nav-toggle-line"></span>
+                <span class="nav-toggle-line"></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main id="MainContent" class="content-for-layout" role="main" tabindex="-1">
+        <!-- Hero Section -->
+        <section id="home" class="hero-section" role="banner">
+            <div class="hero-content">
+                <!-- Decorative Elements with Proper Alt Text -->
+                <div class="hero-stars" aria-hidden="true">
+                    <img src="{{ 'stars.svg' | asset_url }}" alt="" class="floating-stars" loading="lazy">
+                </div>
+                <div class="hero-moon" aria-hidden="true">
+                    <img src="{{ 'moon-phases.svg' | asset_url }}" alt="" class="moon-cycle" loading="lazy">
+                </div>
+
+                <div class="hero-text">
+                    <h1 class="hero-title">Rooted in Legacy, Blooming in Possibility</h1>
+                    <p class="hero-subtitle">
+                        Transforming art, design, and ancestral wisdom into sustainable income streams.
+                        Empowering Black women with AI literacy and digital tools for career advancement.
+                    </p>
+                    <div class="hero-actions">
+                        <a href="#products" class="btn btn--primary" aria-describedby="products-description">
+                            Explore Products
+                        </a>
+                        <a href="#services" class="btn btn--secondary" aria-describedby="services-description">
+                            Book Consultation
+                        </a>
+                    </div>
+
+                    <!-- Hidden descriptions for screen readers -->
+                    <div id="products-description" class="visually-hidden">
+                        Browse our digital products and templates designed for Black women entrepreneurs
+                    </div>
+                    <div id="services-description" class="visually-hidden">
+                        Schedule a consultation for AI integration, website design, or business strategy
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Content Sections -->
+        {{ content_for_layout }}
+
+        <!-- Products Section -->
+        <section id="products" class="grimoire-section" aria-labelledby="products-heading">
+            <div class="container">
+                <header class="section-header">
+                    <h2 id="products-heading" class="section-title">Digital Products & Templates</h2>
+                    <p class="section-subtitle">Professional tools designed with Southern elegance and modern functionality</p>
+                </header>
+
+                <div class="products-grid grid grid--3-col" role="list">
+                    <!-- AI Literacy Workbook -->
+                    <article class="product-card magnolia-card" role="listitem">
+                        <div class="product-badge" aria-label="Bestselling product">BESTSELLER</div>
+                        <div class="product-icon" aria-hidden="true">🤖</div>
+                        <h3>AI Literacy Workbook</h3>
+                        <p class="product-price" aria-label="Price: 47 dollars">$47</p>
+                        <p>Step-by-step guide to using ChatGPT, Canva™ AI, and automation tools for Black women entrepreneurs.</p>
+                        <ul class="product-features" aria-label="Product features">
+                            <li>📚 50+ page workbook</li>
+                            <li>🎥 Video tutorials</li>
+                            <li>📋 Industry-specific prompts</li>
+                        </ul>
+                        <a href="pages/products/ai-literacy-workbook.html" class="btn btn--primary btn--small">
+                            Learn More
+                            <span class="visually-hidden">about AI Literacy Workbook</span>
+                        </a>
+                    </article>
+
+                    <!-- Digital Business Cards -->
+                    <article class="product-card magnolia-card" role="listitem">
+                        <div class="product-icon" aria-hidden="true">💼</div>
+                        <h3>Digital Business Cards</h3>
+                        <p class="product-price" aria-label="Price: 27 dollars">$27</p>
+                        <p>15 professional designs with QR code integration, perfect for networking and modern business.</p>
+                        <ul class="product-features" aria-label="Product features">
+                            <li>🎨 15 unique designs</li>
+                            <li>📱 QR code ready</li>
+                            <li>🖨️ Print & digital formats</li>
+                        </ul>
+                        <a href="pages/products/digital-business-cards.html" class="btn btn--primary btn--small">
+                            Learn More
+                            <span class="visually-hidden">about Digital Business Cards</span>
+                        </a>
+                    </article>
+
+                    <!-- QR Code Marketing Kit -->
+                    <article class="product-card magnolia-card" role="listitem">
+                        <div class="product-icon" aria-hidden="true">📱</div>
+                        <h3>QR Code Marketing Kit</h3>
+                        <p class="product-price" aria-label="Price: 37 dollars">$37</p>
+                        <p>25 QR code designs with tracking setup for restaurants, events, and retail businesses.</p>
+                        <ul class="product-features" aria-label="Product features">
+                            <li>📊 Analytics dashboard</li>
+                            <li>🏪 Retail & restaurant focus</li>
+                            <li>📈 Tracking & reporting</li>
+                        </ul>
+                        <a href="pages/products/qr-marketing-kit.html" class="btn btn--primary btn--small">
+                            Learn More
+                            <span class="visually-hidden">about QR Code Marketing Kit</span>
+                        </a>
+                    </article>
+
+                    <!-- Event Planning Toolkit -->
+                    <article class="product-card magnolia-card" role="listitem">
+                        <div class="product-icon" aria-hidden="true">📅</div>
+                        <h3>Event Planning Toolkit</h3>
+                        <p class="product-price" aria-label="Price: 67 dollars">$67</p>
+                        <p>Complete toolkit for wedding, corporate, and social event planning with Southern elegance.</p>
+                        <ul class="product-features" aria-label="Product features">
+                            <li>💒 Wedding templates</li>
+                            <li>🏢 Corporate planning</li>
+                            <li>📊 Budget trackers</li>
+                        </ul>
+                        <a href="pages/products/event-planning-toolkit.html" class="btn btn--primary btn--small">
+                            Learn More
+                            <span class="visually-hidden">about Event Planning Toolkit</span>
+                        </a>
+                    </article>
+
+                    <!-- Midnight Magnolia Planner -->
+                    <article class="product-card magnolia-card" role="listitem">
+                        <div class="product-icon" aria-hidden="true">📓</div>
+                        <h3>Midnight Magnolia Planner</h3>
+                        <p class="product-price" aria-label="Price: 29 dollars">$29</p>
+                        <p>ADHD-friendly planner with moon phases, gentle accountability, and Southern Gothic design.</p>
+                        <ul class="product-features" aria-label="Product features">
+                            <li>🌙 Moon phase tracking</li>
+                            <li>🧠 ADHD-friendly design</li>
+                            <li>📝 Reflection prompts</li>
+                        </ul>
+                        <a href="pages/products/midnight-planner.html" class="btn btn--primary btn--small">
+                            Learn More
+                            <span class="visually-hidden">about Midnight Magnolia Planner</span>
+                        </a>
+                    </article>
+
+                    <!-- Vintage Art Collections -->
+                    <article class="product-card magnolia-card" role="listitem">
+                        <div class="product-icon" aria-hidden="true">🖼️</div>
+                        <h3>Vintage Art Collections</h3>
+                        <p class="product-price" aria-label="Price range: 19 to 39 dollars">$19-39</p>
+                        <p>Botanical prints and historical photography enhanced with modern Southern elegance.</p>
+                        <ul class="product-features" aria-label="Product features">
+                            <li>🌸 Botanical designs</li>
+                            <li>📜 Historical curation</li>
+                            <li>🖨️ Commercial licensing</li>
+                        </ul>
+                        <a href="pages/products/vintage-art.html" class="btn btn--primary btn--small">
+                            Learn More
+                            <span class="visually-hidden">about Vintage Art Collections</span>
+                        </a>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services Section -->
+        <section id="services" class="grimoire-section celestial-bg" aria-labelledby="services-heading">
+            <div class="container">
+                <header class="section-header">
+                    <h2 id="services-heading" class="section-title">Professional Services</h2>
+                    <p class="section-subtitle">Expert guidance to transform your vision into reality</p>
+                </header>
+
+                <div class="services-grid grid grid--3-col" role="list">
+                    <!-- AI Integration Strategy -->
+                    <article class="service-card magnolia-card" role="listitem">
+                        <div class="service-icon" aria-hidden="true">🤖</div>
+                        <h3>AI Integration Strategy</h3>
+                        <p class="service-price" aria-label="Price: 497 dollars">$497</p>
+                        <p>2-hour consultation to implement AI tools in your business workflow and daily operations.</p>
+                        <ul class="service-features" aria-label="Service features">
+                            <li>⚡ Workflow automation</li>
+                            <li>📊 AI tool selection</li>
+                            <li>🎯 Implementation plan</li>
+                        </ul>
+                        <a href="pages/services/ai-consultation.html" class="btn btn--primary btn--small">
+                            Book Now
+                            <span class="visually-hidden">AI Integration Strategy consultation</span>
+                        </a>
+                    </article>
+
+                    <!-- Website Design & Development -->
+                    <article class="service-card magnolia-card" role="listitem">
+                        <div class="service-icon" aria-hidden="true">💻</div>
+                        <h3>Website Design & Development</h3>
+                        <p class="service-price" aria-label="Price range: 2,997 to 7,997 dollars">$2,997-7,997</p>
+                        <p>Custom websites built with modern technology, beautiful design, and conversion optimization.</p>
+                        <ul class="service-features" aria-label="Service features">
+                            <li>🎨 Custom design</li>
+                            <li>📱 Mobile responsive</li>
+                            <li>🚀 Performance optimized</li>
+                        </ul>
+                        <a href="pages/services/website-design.html" class="btn btn--primary btn--small">
+                            Get Quote
+                            <span class="visually-hidden">for Website Design & Development</span>
+                        </a>
+                    </article>
+
+                    <!-- Personal Brand Photography -->
+                    <article class="service-card magnolia-card" role="listitem">
+                        <div class="service-icon" aria-hidden="true">📸</div>
+                        <h3>Personal Brand Photography</h3>
+                        <p class="service-price" aria-label="Price: 897 dollars">$897</p>
+                        <p>Half-day professional photography session to capture your authentic brand essence.</p>
+                        <ul class="service-features" aria-label="Service features">
+                            <li>📷 Professional editing</li>
+                            <li>🎭 Brand-aligned styling</li>
+                            <li>💾 High-resolution files</li>
+                        </ul>
+                        <a href="pages/services/brand-photography.html" class="btn btn--primary btn--small">
+                            Book Session
+                            <span class="visually-hidden">for Personal Brand Photography</span>
+                        </a>
+                    </article>
+
+                    <!-- Event Planning & Coordination -->
+                    <article class="service-card magnolia-card" role="listitem">
+                        <div class="service-icon" aria-hidden="true">🎪</div>
+                        <h3>Event Planning & Coordination</h3>
+                        <p class="service-price" aria-label="Price range: 2,500 to 8,500 dollars">$2,500-8,500</p>
+                        <p>Full-service event planning for weddings, corporate events, and special celebrations.</p>
+                        <ul class="service-features" aria-label="Service features">
+                            <li>💒 Wedding expertise</li>
+                            <li>🏢 Corporate events</li>
+                            <li>🎨 Theme development</li>
+                        </ul>
+                        <a href="pages/services/event-planning.html" class="btn btn--primary btn--small">
+                            Plan Event
+                            <span class="visually-hidden">with Event Planning & Coordination service</span>
+                        </a>
+                    </article>
+
+                    <!-- Brand Identity Design -->
+                    <article class="service-card magnolia-card" role="listitem">
+                        <div class="service-icon" aria-hidden="true">🎨</div>
+                        <h3>Brand Identity Design</h3>
+                        <p class="service-price" aria-label="Price range: 1,497 to 3,997 dollars">$1,497-3,997</p>
+                        <p>Complete brand identity packages including logo, colors, typography, and brand guidelines.</p>
+                        <ul class="service-features" aria-label="Service features">
+                            <li>🎯 Logo design</li>
+                            <li>🎨 Brand guidelines</li>
+                            <li>📋 Style sheets</li>
+                        </ul>
+                        <a href="pages/services/brand-identity.html" class="btn btn--primary btn--small">
+                            Start Design
+                            <span class="visually-hidden">process for Brand Identity Design</span>
+                        </a>
+                    </article>
+
+                    <!-- Digital Automation Setup -->
+                    <article class="service-card magnolia-card" role="listitem">
+                        <div class="service-icon" aria-hidden="true">📊</div>
+                        <h3>Digital Automation Setup</h3>
+                        <p class="service-price" aria-label="Price: 897 dollars">$897</p>
+                        <p>Complete automation system implementation for your business operations and marketing.</p>
+                        <ul class="service-features" aria-label="Service features">
+                            <li>⚙️ System setup</li>
+                            <li>🔄 Workflow automation</li>
+                            <li>📈 Performance tracking</li>
+                        </ul>
+                        <a href="pages/services/automation-setup.html" class="btn btn--primary btn--small">
+                            Automate Now
+                            <span class="visually-hidden">with Digital Automation Setup service</span>
+                        </a>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI & Technology Section -->
+        <section id="ai-tools" class="grimoire-section" aria-labelledby="ai-tools-heading">
+            <div class="container">
+                <header class="section-header">
+                    <h2 id="ai-tools-heading" class="section-title">AI & Technology Empowerment</h2>
+                    <p class="section-subtitle">Bridging the digital divide for Black women entrepreneurs</p>
+                </header>
+
+                <div class="ai-grid grid grid--3-col" role="list">
+                    <!-- AI Literacy Education -->
+                    <article class="ai-card magnolia-card" role="listitem">
+                        <div class="ai-icon" aria-hidden="true">💡</div>
+                        <h3>AI Literacy Education</h3>
+                        <p>Demystifying artificial intelligence for business growth and creative enhancement.</p>
+                        <ul class="ai-features" aria-label="AI Education features">
+                            <li>🤖 ChatGPT mastery</li>
+                            <li>🎨 Canva™ AI tools</li>
+                            <li>⚡ Automation workflows</li>
+                            <li>📈 Business applications</li>
+                        </ul>
+                        <a href="pages/ai/ai-literacy-course.html" class="btn btn--primary btn--small">
+                            Start Learning
+                            <span class="visually-hidden">AI Literacy Education</span>
+                        </a>
+                    </article>
+
+                    <!-- Digital Business Tools -->
+                    <article class="ai-card magnolia-card" role="listitem">
+                        <div class="ai-icon" aria-hidden="true">🚀</div>
+                        <h3>Digital Business Tools</h3>
+                        <p>Essential software and platforms for modern business operations and marketing.</p>
+                        <ul class="ai-features" aria-label="Digital Tools features">
+                            <li>📧 Email automation</li>
+                            <li>📊 Analytics & tracking</li>
+                            <li>💳 Payment processing</li>
+                            <li>📱 Social media tools</li>
+                        </ul>
+                        <a href="pages/ai/digital-tools-guide.html" class="btn btn--primary btn--small">
+                            Get Tools
+                            <span class="visually-hidden">guide for Digital Business Tools</span>
+                        </a>
+                    </article>
+
+                    <!-- Passive Income Strategies -->
+                    <article class="ai-card magnolia-card" role="listitem">
+                        <div class="ai-icon" aria-hidden="true">💰</div>
+                        <h3>Passive Income Strategies</h3>
+                        <p>Building sustainable income streams through digital products and automation.</p>
+                        <ul class="ai-features" aria-label="Passive Income features">
+                            <li>📦 Digital product creation</li>
+                            <li>🔄 Automated sales funnels</li>
+                            <li>📈 Scaling strategies</li>
+                            <li>🎯 Niche market focus</li>
+                        </ul>
+                        <a href="pages/ai/passive-income-blueprint.html" class="btn btn--primary btn--small">
+                            Build Income
+                            <span class="visually-hidden">with Passive Income Strategies</span>
+                        </a>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- Events Section -->
+        <section id="events" class="grimoire-section celestial-bg" aria-labelledby="events-heading">
+            <div class="container">
+                <header class="section-header">
+                    <h2 id="events-heading" class="section-title">Upcoming Events & Workshops</h2>
+                    <p class="section-subtitle">Join our community for transformative experiences and skill-building workshops</p>
+                </header>
+
+                <div class="events-grid grid grid--2-col" role="list">
+                    <!-- AI for Entrepreneurs Workshop -->
+                    <article class="event-card magnolia-card" role="listitem">
+                        <div class="event-date" aria-label="Event date: October 15, 2025">
+                            <span class="month">OCT</span>
+                            <span class="day">15</span>
+                        </div>
+                        <div class="event-content">
+                            <h3>AI for Entrepreneurs Workshop</h3>
+                            <p>Learn to leverage AI tools for business growth and automation. Perfect for Black women entrepreneurs ready to scale.</p>
+                            <dl class="event-details">
+                                <dt class="visually-hidden">Date:</dt>
+                                <dd>📅 October 15, 2025</dd>
+                                <dt class="visually-hidden">Time:</dt>
+                                <dd>🕐 2:00 PM EST</dd>
+                                <dt class="visually-hidden">Format:</dt>
+                                <dd>💻 Virtual Event</dd>
+                            </dl>
+                            <p class="event-price" aria-label="Event price: 47 dollars">$47</p>
+                            <a href="pages/events/ai-workshop.html" class="btn btn--primary btn--small">
+                                Register Now
+                                <span class="visually-hidden">for AI for Entrepreneurs Workshop</span>
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- Digital Product Launch Masterclass -->
+                    <article class="event-card magnolia-card" role="listitem">
+                        <div class="event-date" aria-label="Event date: November 8, 2025">
+                            <span class="month">NOV</span>
+                            <span class="day">08</span>
+                        </div>
+                        <div class="event-content">
+                            <h3>Digital Product Launch Masterclass</h3>
+                            <p>Create and launch profitable digital products using AI and automation. From idea to income in 30 days.</p>
+                            <dl class="event-details">
+                                <dt class="visually-hidden">Date:</dt>
+                                <dd>📅 November 8, 2025</dd>
+                                <dt class="visually-hidden">Time:</dt>
+                                <dd>🕐 10:00 AM EST</dd>
+                                <dt class="visually-hidden">Format:</dt>
+                                <dd>💻 Virtual Event</dd>
+                            </dl>
+                            <p class="event-price" aria-label="Event price: 67 dollars">$67</p>
+                            <a href="pages/events/product-launch.html" class="btn btn--primary btn--small">
+                                Register Now
+                                <span class="visually-hidden">for Digital Product Launch Masterclass</span>
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- Holiday Business Planning Retreat -->
+                    <article class="event-card magnolia-card" role="listitem">
+                        <div class="event-date" aria-label="Event date: December 1, 2025">
+                            <span class="month">DEC</span>
+                            <span class="day">01</span>
+                        </div>
+                        <div class="event-content">
+                            <h3>Holiday Business Planning Retreat</h3>
+                            <p>Strategic planning session for Q4 success and 2026 goal setting. Network with like-minded entrepreneurs.</p>
+                            <dl class="event-details">
+                                <dt class="visually-hidden">Date:</dt>
+                                <dd>📅 December 1, 2025</dd>
+                                <dt class="visually-hidden">Time:</dt>
+                                <dd>🕐 9:00 AM EST</dd>
+                                <dt class="visually-hidden">Format:</dt>
+                                <dd>🏨 In-Person Event</dd>
+                            </dl>
+                            <p class="event-price" aria-label="Event price: 127 dollars">$127</p>
+                            <a href="pages/events/holiday-retreat.html" class="btn btn--primary btn--small">
+                                Reserve Spot
+                                <span class="visually-hidden">for Holiday Business Planning Retreat</span>
+                            </a>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="events-cta">
+                    <h3>Want to Host Your Event With Us?</h3>
+                    <p>We specialize in wedding planning, corporate events, and transformative workshops.</p>
+                    <a href="pages/services/event-planning.html" class="btn btn--secondary">
+                        Plan Your Event
+                        <span class="visually-hidden">with our event planning services</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Preview Section -->
+        <section id="about" class="grimoire-section" aria-labelledby="about-heading">
+            <div class="container">
+                <div class="about-preview">
+                    <div class="about-content">
+                        <h2 id="about-heading" class="section-title">Rooted in Legacy, Growing in Purpose</h2>
+                        <p>Midnight Magnolia is more than a business—it's a movement toward liberation, creativity, and sustainable prosperity. We weave together technology, tradition, and transformation to create pathways for Black women to build wealth while honoring their heritage.</p>
+
+                        <div class="about-stats" role="list" aria-label="Business statistics">
+                            <div class="stat" role="listitem">
+                                <span class="stat-number" aria-label="500 plus">500+</span>
+                                <span class="stat-label">Women Empowered</span>
+                            </div>
+                            <div class="stat" role="listitem">
+                                <span class="stat-number" aria-label="25 plus">25+</span>
+                                <span class="stat-label">Digital Products</span>
+                            </div>
+                            <div class="stat" role="listitem">
+                                <span class="stat-number" aria-label="35 thousand dollars">$35K</span>
+                                <span class="stat-label">Q4 Revenue Target</span>
+                            </div>
+                        </div>
+
+                        <a href="pages/about.html" class="btn btn--primary">
+                            Learn Our Story
+                            <span class="visually-hidden">and mission in detail</span>
+                        </a>
+                    </div>
+                    <div class="about-image">
+                        <div class="image-placeholder" role="img" aria-label="Founder portrait placeholder">
+                            <span aria-hidden="true">🌸</span>
+                            <p>Founder Portrait</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Section -->
+    {% section 'footer' %}
+
+    <!-- Alternative Footer (Standalone) -->
+    <footer class="grimoire-footer celestial-bg" role="contentinfo">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <img src="{{ 'magnolia-flower.svg' | asset_url }}" alt="Magnolia Flower Logo" class="footer-logo" width="60" height="60">
+                    <h3>Midnight Magnolia</h3>
+                    <p>Technology Empowerment & Southern Gothic Design</p>
+                    <p class="brand-tagline">"Rooted in legacy, blooming in possibility"</p>
+                </div>
+
+                <div class="footer-links">
+                    <div class="footer-section">
+                        <h4>Digital Products</h4>
+                        <ul class="footer-menu" role="list">
+                            <li><a href="#products">AI Literacy Workbook</a></li>
+                            <li><a href="#products">Business Templates</a></li>
+                            <li><a href="#products">Event Planning Kit</a></li>
+                            <li><a href="#products">Southern Gothic Journals</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-section">
+                        <h4>Services</h4>
+                        <ul class="footer-menu" role="list">
+                            <li><a href="#services">AI Consulting</a></li>
+                            <li><a href="#services">Website Design</a></li>
+                            <li><a href="#services">Brand Photography</a></li>
+                            <li><a href="#services">Event Planning</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-section">
+                        <h4>Technology & Learning</h4>
+                        <ul class="footer-menu" role="list">
+                            <li><a href="#ai-tools">AI Education</a></li>
+                            <li><a href="#ai-tools">Digital Tools</a></li>
+                            <li><a href="#ai-tools">Passive Income</a></li>
+                            <li><a href="#events">Workshops</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-section">
+                        <h4>Company</h4>
+                        <ul class="footer-menu" role="list">
+                            <li><a href="pages/about.html">About Us</a></li>
+                            <li><a href="pages/blog.html">Blog</a></li>
+                            <li><a href="pages/testimonials.html">Testimonials</a></li>
+                            <li><a href="#contact">Contact</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="footer-legal">
+                    <p>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.</p>
+                    <nav class="legal-links" aria-label="Legal pages">
+                        <a href="pages/privacy.html">Privacy Policy</a>
+                        <a href="pages/terms.html">Terms of Service</a>
+                        <a href="pages/accessibility.html">Accessibility</a>
+                    </nav>
+                </div>
+
+                <div class="footer-social" role="list" aria-label="Social media links">
+                    <a href="#" aria-label="Follow us on Instagram" role="listitem">📷</a>
+                    <a href="#" aria-label="Connect with us on LinkedIn" role="listitem">💼</a>
+                    <a href="#" aria-label="Follow us on TikTok" role="listitem">🎵</a>
+                    <a href="#" aria-label="Subscribe to our YouTube channel" role="listitem">📺</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Accessibility Live Region for Announcements -->
+    <div aria-live="polite" aria-atomic="true" class="visually-hidden" id="a11y-live-region"></div>
+
+    <!-- Hidden Accessibility Messages -->
+    <ul class="visually-hidden" role="list">
+        <li id="a11y-refresh-page-message">{{ 'accessibility.refresh_page' | t | default: 'The page has been refreshed.' }}</li>
+        <li id="a11y-new-window-message">{{ 'accessibility.link_messages.new_window' | t | default: 'Opens in a new window.' }}</li>
+    </ul>
+
+    <!-- JavaScript Initialization -->
+    <script>
+        // Performance measurement
+        window.performance.mark('body-end');
+        window.performance.measure('page-load', 'head-start', 'body-end');
+
+        // Initialize theme when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            // Remove no-js class
+            document.documentElement.classList.remove('no-js');
+            document.documentElement.classList.add('js');
+
+            // Initialize navigation
+            const navToggle = document.querySelector('.nav-toggle');
+            const navMenu = document.querySelector('.nav-menu');
+
+            if (navToggle && navMenu) {
+                navToggle.addEventListener('click', function() {
+                    const isExpanded = this.getAttribute('aria-expanded') === 'true';
+                    this.setAttribute('aria-expanded', !isExpanded);
+                    navMenu.classList.toggle('is-open');
+                });
+            }
+
+            // Enhanced focus management
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    const openDropdowns = document.querySelectorAll('.nav-dropdown.is-open');
+                    openDropdowns.forEach(dropdown => {
+                        dropdown.classList.remove('is-open');
+                    });
+                }
+            });
+
+            // Performance reporting (optional)
+            if (window.performance && window.performance.getEntriesByType) {
+                const paintEntries = window.performance.getEntriesByType('paint');
+                paintEntries.forEach(entry => {
+                    console.log(`${entry.name}: ${entry.startTime}ms`);
+                });
+            }
+
+            // Theme loaded event
+            window.dispatchEvent(new CustomEvent('themeLoaded', {
+                detail: {
+                    timestamp: Date.now(),
+                    performance: window.performance.getEntriesByType('measure')
+                }
+            }));
+        });
+
+        // Service Worker registration (if available)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js').catch(function(err) {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+    </script>
+
+    <!-- Theme JavaScript (consolidated) -->
+    <script src="{{ 'grimoire.js' | asset_url }}" defer></script>
+</body>
+</html>

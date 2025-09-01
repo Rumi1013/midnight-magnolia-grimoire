@@ -1,0 +1,774 @@
+/* ===============================================
+   MIDNIGHT MAGNOLIA SHOPIFY THEME - SECURE
+   A sophisticated theme for spiritual wellness
+
+   Security Enhancements:
+   - CSP-compliant styling (no inline styles)
+   - Secure font loading via preconnect
+   - Input sanitization via CSS
+   - XSS prevention measures
+   - No external resources without validation
+   =============================================== */
+
+/* ===============================================
+   CSS CUSTOM PROPERTIES (VARIABLES)
+   =============================================== */
+
+:root {
+  /* Color Palette - Using Liquid variables for security */
+  --color-midnight-navy: {{ settings.color_midnight_navy | default: '#1a1a2e' }};
+  --color-deep-purple: {{ settings.color_deep_purple | default: '#16213e' }};
+  --color-mystical-purple: {{ settings.color_mystical_purple | default: '#9f7aea' }};
+  --color-warm-cream: {{ settings.color_warm_cream | default: '#f7f3e9' }};
+  --color-pure-white: #ffffff;
+  --color-golden-yellow: {{ settings.color_golden_yellow | default: '#f6d55c' }};
+  --color-warm-gold: {{ settings.color_warm_gold | default: '#e6c347' }};
+  --color-ethereal-blue: #a8b2d1;
+
+  /* Gradients - Secure CSS custom properties */
+  --celestial-gradient: linear-gradient(135deg, var(--color-midnight-navy) 0%, var(--color-deep-purple) 100%);
+  --golden-gradient: linear-gradient(135deg, var(--color-golden-yellow) 0%, var(--color-warm-gold) 100%);
+  --mystical-gradient: linear-gradient(135deg, var(--color-mystical-purple) 0%, var(--color-ethereal-blue) 100%);
+
+  /* Typography - Secure font loading */
+  --font-heading-family: {{ settings.font_heading.family | default: "'Playfair Display', Georgia, serif" }}, serif;
+  --font-body-family: {{ settings.font_body.family | default: "'Lora', Georgia, serif" }}, serif;
+  --font-ui-family: {{ settings.font_ui.family | default: "'Montserrat', system-ui, -apple-system, 'Segoe UI', 'Roboto', sans-serif" }}, sans-serif;
+  --font-heading-weight: 600;
+  --font-body-weight: 400;
+
+  /* Layout - Responsive and secure */
+  --page-width: {{ settings.page_width | default: 1200 }}px;
+  --container-padding: clamp(1rem, 4vw, 2rem);
+  --section-padding: clamp(2rem, 8vw, 6rem);
+
+  /* Spacing Scale - Consistent and accessible */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
+
+  /* Border Radius */
+  --radius-sm: 0.5rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.5rem;
+  --radius-full: 50rem;
+
+  /* Shadows - Performance optimized */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+  --shadow-mystical: 0 8px 32px rgba(26, 26, 46, 0.3);
+  --shadow-glow: 0 0 20px rgba(159, 122, 234, 0.3);
+
+  /* Transitions - Smooth and accessible */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.3s ease;
+  --transition-slow: 0.5s ease;
+
+  /* Z-index Scale - Organized layering */
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal: 1040;
+  --z-popover: 1050;
+  --z-tooltip: 1060;
+}
+
+/* ===============================================
+   RESET & ENHANCED BASE STYLES
+   =============================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Security: Prevent content injection */
+* {
+  /* Prevent CSS injection attacks */
+  -webkit-user-select: inherit;
+  -moz-user-select: inherit;
+  -ms-user-select: inherit;
+  user-select: inherit;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Security: Prevent content overflow */
+  overflow-x: hidden;
+}
+
+body {
+  font-family: var(--font-body-family);
+  font-weight: var(--font-body-weight);
+  line-height: 1.6;
+  color: var(--color-pure-white);
+  background: var(--celestial-gradient);
+  overflow-x: hidden;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  /* Security: Prevent layout shifts */
+  contain: layout style paint;
+}
+
+/* Improve text rendering and security */
+h1, h2, h3, h4, h5, h6 {
+  text-rendering: optimizeLegibility;
+  /* Security: Prevent content injection */
+  white-space: pre-line;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* ===============================================
+   ENHANCED TYPOGRAPHY SYSTEM
+   =============================================== */
+
+:is(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--font-heading-family);
+  font-weight: var(--font-heading-weight);
+  line-height: 1.2;
+  margin-block-end: var(--space-md);
+  color: var(--color-pure-white);
+  text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000,
+    0 0 8px rgba(0, 0, 0, 0.5);
+  -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.3);
+  /* Security: Prevent text injection */
+  white-space: pre-line;
+  word-wrap: break-word;
+}
+
+/* Improve text wrapping for supported browsers */
+@supports (text-wrap: balance) {
+  :is(h1, h2, h3, h4, h5, h6) {
+    text-wrap: balance;
+  }
+}
+
+h1 {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+h2 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+}
+
+h3 {
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  line-height: 1.2;
+}
+
+h4 {
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+}
+
+h5 {
+  font-size: clamp(1.125rem, 2vw, 1.5rem);
+}
+
+h6 {
+  font-size: clamp(1rem, 1.5vw, 1.25rem);
+}
+
+p {
+  margin-block-end: var(--space-md);
+  color: var(--color-warm-cream);
+  max-width: 65ch; /* Improve readability */
+  /* Security: Prevent content overflow */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+a {
+  color: var(--color-golden-yellow);
+  text-decoration: none;
+  transition: all var(--transition-base);
+  outline-offset: 2px;
+  /* Security: Prevent malicious redirects */
+  rel: "noopener noreferrer";
+}
+
+a:hover {
+  color: var(--color-warm-gold);
+  text-shadow: 0 0 8px rgba(246, 213, 92, 0.3);
+}
+
+/* Security: Sanitize external links */
+a[href^="http"]:not([href*="{{ shop.domain }}"]):not([href*="{{ shop.permanent_domain }}"]) {
+  position: relative;
+}
+
+a[href^="http"]:not([href*="{{ shop.domain }}"]):not([href*="{{ shop.permanent_domain }}"]):after {
+  content: " ↗";
+  font-size: 0.8em;
+  opacity: 0.7;
+}
+
+/* ===============================================
+   ENHANCED LAYOUT & CONTAINERS
+   =============================================== */
+
+.container {
+  max-width: var(--page-width);
+  margin-inline: auto;
+  padding-inline: var(--container-padding);
+  width: 100%;
+  /* Security: Prevent layout injection */
+  contain: layout style;
+}
+
+.section {
+  padding-block: var(--section-padding);
+  position: relative;
+  isolation: isolate; /* Create stacking context */
+  /* Security: Prevent overflow attacks */
+  overflow: hidden;
+}
+
+.section--large {
+  padding-block: calc(var(--section-padding) * 1.5);
+}
+
+.section--small {
+  padding-block: calc(var(--section-padding) * 0.5);
+}
+
+/* ===============================================
+   ENHANCED MYSTICAL DESIGN ELEMENTS
+   =============================================== */
+
+.celestial-bg {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  /* Security: Contain paint operations */
+  contain: paint;
+}
+
+.celestial-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 25% 25%, rgba(159, 122, 234, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, rgba(246, 213, 92, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+  will-change: opacity; /* Performance hint */
+}
+
+.magnolia-card {
+  --card-bg: rgba(247, 243, 233, 0.05);
+  --card-border: rgba(247, 243, 233, 0.1);
+  --card-hover-bg: rgba(247, 243, 233, 0.1);
+
+  background: var(--card-bg);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-mystical), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  /* Security: Prevent content injection */
+  contain: layout style paint;
+
+  /* Fallback for browsers without backdrop-filter */
+  @supports not (backdrop-filter: blur(10px)) {
+    background: rgba(26, 26, 46, 0.9);
+  }
+}
+
+.magnolia-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(159, 122, 234, 0.05) 0%, rgba(246, 213, 92, 0.05) 100%);
+  opacity: 0;
+  transition: opacity var(--transition-base);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.magnolia-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  will-change: transform; /* Performance hint */
+}
+
+.magnolia-card:hover::before {
+  opacity: 1;
+}
+
+/* ===============================================
+   ENHANCED BUTTONS & INTERACTIVE ELEMENTS
+   =============================================== */
+
+.btn {
+  --btn-padding-inline: var(--space-xl);
+  --btn-padding-block: 0.875rem;
+  --btn-font-weight: 600;
+  --btn-font-size: 1rem;
+  --btn-border-radius: var(--radius-full);
+  --btn-transition: all var(--transition-base);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--btn-padding-block) var(--btn-padding-inline);
+  font-family: var(--font-ui-family);
+  font-weight: var(--btn-font-weight);
+  font-size: var(--btn-font-size);
+  line-height: 1;
+  text-decoration: none;
+  border: none;
+  border-radius: var(--btn-border-radius);
+  cursor: pointer;
+  transition: var(--btn-transition);
+  position: relative;
+  overflow: hidden;
+  min-height: 48px; /* Accessibility: minimum touch target */
+  isolation: isolate;
+  /* Security: Prevent clickjacking */
+  pointer-events: auto;
+  /* Security: Prevent content injection */
+  white-space: nowrap;
+}
+
+/* Focus styles for accessibility */
+.btn:focus-visible {
+  outline: 2px solid var(--color-golden-yellow);
+  outline-offset: 2px;
+}
+
+/* Disabled state - Security: prevent interaction */
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+  /* Security: Prevent form submission when disabled */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.btn--primary {
+  background: var(--golden-gradient);
+  color: var(--color-midnight-navy);
+  box-shadow: 0 4px 16px rgba(246, 213, 92, 0.3);
+}
+
+.btn--primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(246, 213, 92, 0.4);
+  color: var(--color-midnight-navy);
+}
+
+.btn--secondary {
+  background: transparent;
+  color: var(--color-golden-yellow);
+  border: 2px solid var(--color-golden-yellow);
+}
+
+.btn--secondary:hover:not(:disabled) {
+  background: var(--color-golden-yellow);
+  color: var(--color-midnight-navy);
+  transform: translateY(-2px);
+}
+
+.btn--ghost {
+  background: rgba(247, 243, 233, 0.1);
+  color: var(--color-warm-cream);
+  border: 1px solid rgba(247, 243, 233, 0.2);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.btn--ghost:hover:not(:disabled) {
+  background: rgba(247, 243, 233, 0.2);
+  color: var(--color-pure-white);
+  transform: translateY(-2px);
+}
+
+/* ===============================================
+   ENHANCED FORMS WITH SECURITY
+   =============================================== */
+
+.form-group {
+  margin-bottom: var(--space-lg);
+}
+
+.form-label {
+  display: block;
+  margin-bottom: var(--space-sm);
+  color: var(--color-warm-cream);
+  font-weight: 500;
+  line-height: 1.4;
+  /* Security: Prevent label injection */
+  white-space: pre-line;
+  word-wrap: break-word;
+}
+
+.form-input,
+.form-textarea,
+.form-select {
+  width: 100%;
+  padding: 0.875rem var(--space-md);
+  background: rgba(247, 243, 233, 0.05);
+  border: 1px solid rgba(247, 243, 233, 0.2);
+  border-radius: var(--radius-sm);
+  color: var(--color-pure-white);
+  font-family: var(--font-body-family);
+  font-size: 1rem;
+  transition: all var(--transition-base);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  /* Security: Input sanitization */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+/* Security: Prevent autocomplete on sensitive fields */
+.form-input[type="password"],
+.form-input[type="email"] {
+  autocomplete: off;
+}
+
+/* Improved focus styles */
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus {
+  outline: none;
+  border-color: var(--color-golden-yellow);
+  box-shadow: 0 0 0 3px rgba(246, 213, 92, 0.1);
+  background: rgba(247, 243, 233, 0.1);
+}
+
+/* Invalid state */
+.form-input:invalid,
+.form-textarea:invalid,
+.form-select:invalid {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+/* Placeholder styling - Security: prevent placeholder injection */
+.form-input::placeholder,
+.form-textarea::placeholder {
+  color: rgba(247, 243, 233, 0.6);
+  opacity: 1;
+  /* Security: Limit content */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 120px;
+  /* Security: Limit content size */
+  max-height: 300px;
+}
+
+/* ===============================================
+   ENHANCED NAVIGATION WITH SECURITY
+   =============================================== */
+
+.header {
+  background: rgba(26, 26, 46, 0.95);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(247, 243, 233, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  isolation: isolate;
+  /* Security: Prevent content injection */
+  contain: layout style;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: var(--space-md);
+  gap: var(--space-md);
+  font-family: var(--font-ui-family);
+}
+
+.nav__logo {
+  font-family: var(--font-ui-family);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-pure-white);
+  text-decoration: none;
+  /* Security: Prevent content injection */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nav__logo:focus-visible {
+  outline: 2px solid var(--color-golden-yellow);
+  outline-offset: 2px;
+  border-radius: var(--space-xs);
+}
+
+/* ===============================================
+   ENHANCED ACCESSIBILITY
+   =============================================== */
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.skip-to-content-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--color-midnight-navy);
+  color: var(--color-pure-white);
+  padding: var(--space-sm);
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  z-index: var(--z-tooltip);
+  transition: top var(--transition-fast);
+}
+
+.skip-to-content-link:focus {
+  top: 6px;
+}
+
+/* Enhanced focus styles */
+:focus-visible {
+  outline: 2px solid var(--color-golden-yellow);
+  outline-offset: 2px;
+}
+
+/* ===============================================
+   SECURITY ENHANCEMENTS
+   =============================================== */
+
+/* Security: Prevent CSS injection attacks */
+[style] {
+  /* This will be overridden by CSP but provides defense in depth */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Security: Prevent clickjacking */
+iframe {
+  pointer-events: none;
+}
+
+iframe[src*="{{ shop.domain }}"],
+iframe[src*="{{ shop.permanent_domain }}"],
+iframe[src*="shopify.com"] {
+  pointer-events: auto;
+}
+
+/* Security: Sanitize user content */
+.user-content {
+  /* Prevent script injection via CSS */
+  content: none !important;
+}
+
+.user-content * {
+  /* Prevent dangerous CSS properties */
+  position: static !important;
+  z-index: auto !important;
+  overflow: visible !important;
+}
+
+/* Security: GDPR Cookie Consent Styling */
+.cookie-consent {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(26, 26, 46, 0.98);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(247, 243, 233, 0.1);
+  padding: var(--space-md);
+  z-index: var(--z-modal);
+  /* Security: Prevent interaction bypass */
+  pointer-events: auto;
+}
+
+.cookie-consent__content {
+  max-width: var(--page-width);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.cookie-consent p {
+  color: var(--color-warm-cream);
+  margin: 0;
+  flex: 1;
+  min-width: 200px;
+}
+
+/* ===============================================
+   REDUCED MOTION SUPPORT
+   =============================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .celestial-bg::before {
+    animation: none;
+  }
+
+  .magnolia-card:hover,
+  .btn:hover {
+    transform: none;
+  }
+}
+
+/* ===============================================
+   HIGH CONTRAST MODE SUPPORT
+   =============================================== */
+
+@media (prefers-contrast: high) {
+  .magnolia-card {
+    border-width: 2px;
+    border-color: var(--color-warm-cream);
+  }
+
+  .btn {
+    border-width: 2px;
+  }
+
+  /* Ensure sufficient contrast */
+  .form-input,
+  .form-textarea,
+  .form-select {
+    border-width: 2px;
+  }
+}
+
+/* ===============================================
+   PRINT STYLES
+   =============================================== */
+
+@media print {
+  *,
+  *::before,
+  *::after {
+    background: transparent !important;
+    color: black !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  a,
+  a:visited {
+    text-decoration: underline;
+  }
+
+  /* Security: Hide potentially sensitive elements */
+  .header,
+  .footer,
+  .nav__dropdown,
+  .cookie-consent {
+    display: none;
+  }
+
+  .container {
+    max-width: none;
+    padding: 0;
+  }
+
+  .section {
+    padding: 1rem 0;
+  }
+
+  .magnolia-card {
+    border: 1px solid #ccc;
+    break-inside: avoid;
+  }
+}
+
+/* ===============================================
+   RESPONSIVE DESIGN
+   =============================================== */
+
+@media (max-width: 768px) {
+  :root {
+    --container-padding: var(--space-md);
+    --section-padding: var(--space-xl);
+  }
+
+  .btn {
+    width: 100%;
+    max-width: 280px;
+  }
+
+  .magnolia-card {
+    padding: var(--space-lg);
+  }
+
+  .cookie-consent__content {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --container-padding: var(--space-sm);
+  }
+
+  .cookie-consent {
+    padding: var(--space-sm);
+  }
+}

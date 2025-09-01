@@ -1,0 +1,60 @@
+{
+  "current": {
+    "color_midnight_navy": "#1a1a2e",
+    "color_deep_purple": "#16213e",
+    "color_mystical_purple": "#9f7aea",
+    "color_warm_cream": "#f7f3e9",
+    "color_golden_yellow": "#f6d55c",
+    "color_warm_gold": "#e6c347",
+    "font_heading": "assistant_n4",
+    "font_body": "assistant_n4",
+    "font_size_base": 16,
+    "page_width": 1200,
+    "section_padding": 60,
+    "enable_csp": true,
+    "enable_csrf_protection": true,
+    "force_https": true,
+    "enable_hsts": true,
+    "allowed_domains": "fonts.googleapis.com fonts.gstatic.com",
+    "enable_lazy_loading": true,
+    "preload_fonts": true,
+    "minify_css": true,
+    "social_facebook": "",
+    "social_instagram": "",
+    "social_twitter": "",
+    "social_pinterest": "",
+    "social_youtube": "",
+    "seo_title": "Midnight Magnolia - Spiritual Wellness & Tarot",
+    "seo_description": "Discover spiritual wellness, tarot readings, and mystical products at Midnight Magnolia. Your journey to inner wisdom starts here.",
+    "seo_image": "",
+    "google_analytics_id": "",
+    "facebook_pixel_id": "",
+    "enable_gdpr_compliance": true
+  },
+  "presets": {
+    "default": {
+      "color_midnight_navy": "#1a1a2e",
+      "color_deep_purple": "#16213e",
+      "color_mystical_purple": "#9f7aea",
+      "color_warm_cream": "#f7f3e9",
+      "color_golden_yellow": "#f6d55c",
+      "color_warm_gold": "#e6c347"
+    },
+    "dark_mystical": {
+      "color_midnight_navy": "#0d1117",
+      "color_deep_purple": "#21262d",
+      "color_mystical_purple": "#8b5cf6",
+      "color_warm_cream": "#f0f6fc",
+      "color_golden_yellow": "#fbbf24",
+      "color_warm_gold": "#f59e0b"
+    },
+    "light_ethereal": {
+      "color_midnight_navy": "#1e293b",
+      "color_deep_purple": "#334155",
+      "color_mystical_purple": "#a855f7",
+      "color_warm_cream": "#f8fafc",
+      "color_golden_yellow": "#eab308",
+      "color_warm_gold": "#ca8a04"
+    }
+  }
+}

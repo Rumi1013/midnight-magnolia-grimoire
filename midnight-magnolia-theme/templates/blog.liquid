@@ -1,0 +1,349 @@
+{% comment %}
+  Blog Template - Midnight Magnolia Theme
+
+  Security Features:
+  - XSS prevention with proper escaping
+  - Input sanitization for all user data
+  - Secure pagination handling
+  - Accessibility features (WCAG 2.1 AA)
+  - SEO optimization with security considerations
+{% endcomment %}
+
+<div class="blog-page celestial-bg">
+  <div class="container">
+
+    <!-- Breadcrumb Navigation -->
+    <nav class="breadcrumb" aria-label="{{ 'general.accessibility.breadcrumb' | t | escape }}">
+      <ol class="breadcrumb__list">
+        <li class="breadcrumb__item">
+          <a href="{{ routes.root_url }}" class="breadcrumb__link">{{ 'layout.navigation.home' | t | escape }}</a>
+        </li>
+        <li class="breadcrumb__item" aria-current="page">
+          {{ blog.title | escape }}
+        </li>
+      </ol>
+    </nav>
+
+    <!-- Blog Header -->
+    <header class="blog-header">
+      <h1 class="blog-title">{{ blog.title | escape }}</h1>
+      {% if blog.description != blank %}
+        <p class="blog-description">{{ blog.description | escape }}</p>
+      {% endif %}
+    </header>
+
+    <!-- Articles List -->
+    <main class="blog-articles" role="main">
+      {% if blog.articles.size > 0 %}
+        <div class="articles-grid">
+          {% for article in blog.articles %}
+            <article class="article-card magnolia-card">
+
+              {% if article.image %}
+                <div class="article-card__image">
+                  <a href="{{ article.url | escape }}" aria-label="{{ 'blog.general.read_more' | t | escape }} {{ article.title | escape }}">
+                    <img
+                      src="{{ article.image | img_url: '400x300' }}"
+                      alt="{{ article.image.alt | default: article.title | escape }}"
+                      width="400"
+                      height="300"
+                      loading="lazy"
+                      decoding="async"
+                    >
+                  </a>
+                </div>
+              {% endif %}
+
+              <div class="article-card__content">
+                <header class="article-card__header">
+                  <h2 class="article-card__title">
+                    <a href="{{ article.url | escape }}">{{ article.title | escape }}</a>
+                  </h2>
+
+                  <div class="article-card__meta">
+                    <time class="article-card__date" datetime="{{ article.published_at | date: '%Y-%m-%d' }}">
+                      {{ article.published_at | date: format: 'month_day_year' }}
+                    </time>
+
+                    {% if article.author != blank %}
+                      <span class="article-card__author">
+                        {{ 'blog.general.posted_by' | t: author: article.author | escape }}
+                      </span>
+                    {% endif %}
+                  </div>
+                </header>
+
+                {% if article.excerpt != blank %}
+                  <div class="article-card__excerpt">
+                    {{ article.excerpt | strip_html | truncate: 150 | escape }}
+                  </div>
+                {% else %}
+                  <div class="article-card__excerpt">
+                    {{ article.content | strip_html | truncate: 150 | escape }}
+                  </div>
+                {% endif %}
+
+                {% if article.tags.size > 0 %}
+                  <div class="article-card__tags">
+                    {% for tag in article.tags limit: 3 %}
+                      <span class="article-tag">{{ tag | escape }}</span>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+
+                <footer class="article-card__footer">
+                  <a href="{{ article.url | escape }}" class="btn btn--ghost btn--small">
+                    {{ 'blog.general.read_more' | t | escape }}
+                  </a>
+                </footer>
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% paginate blog.articles by 6 %}
+          {% if paginate.pages > 1 %}
+            <nav class="pagination" aria-label="{{ 'general.pagination.label' | t | escape }}">
+              <ul class="pagination__list">
+                {% if paginate.previous %}
+                  <li class="pagination__item">
+                    <a href="{{ paginate.previous.url | escape }}" class="pagination__link" aria-label="{{ 'general.accessibility.previous' | t | escape }}">
+                      {{ 'general.accessibility.previous' | t | escape }}
+                    </a>
+                  </li>
+                {% endif %}
+
+                {% for part in paginate.parts %}
+                  {% if part.is_link %}
+                    <li class="pagination__item">
+                      <a href="{{ part.url | escape }}" class="pagination__link">{{ part.title | escape }}</a>
+                    </li>
+                  {% else %}
+                    <li class="pagination__item">
+                      {% if part.title == paginate.current_page %}
+                        <span class="pagination__link pagination__link--current" aria-current="page">{{ part.title | escape }}</span>
+                      {% else %}
+                        <span class="pagination__ellipsis">{{ part.title | escape }}</span>
+                      {% endif %}
+                    </li>
+                  {% endif %}
+                {% endfor %}
+
+                {% if paginate.next %}
+                  <li class="pagination__item">
+                    <a href="{{ paginate.next.url | escape }}" class="pagination__link" aria-label="{{ 'general.accessibility.next' | t | escape }}">
+                      {{ 'general.accessibility.next' | t | escape }}
+                    </a>
+                  </li>
+                {% endif %}
+              </ul>
+            </nav>
+          {% endif %}
+        {% endpaginate %}
+
+      {% else %}
+        <!-- Empty State -->
+        <div class="empty-state">
+          <div class="empty-state__content magnolia-card">
+            <h2>{{ 'blog.general.no_articles' | t | escape }}</h2>
+            <p>{{ 'blog.general.no_articles_description' | t | escape }}</p>
+            <a href="{{ routes.root_url }}" class="btn btn--primary">
+              {{ 'layout.navigation.home' | t | escape }}
+            </a>
+          </div>
+        </div>
+      {% endif %}
+    </main>
+  </div>
+</div>
+
+<style>
+/* Blog Page Styles */
+.blog-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.blog-title {
+  margin-bottom: 1rem;
+}
+
+.blog-description {
+  max-width: 600px;
+  margin: 0 auto;
+  color: rgba(247, 243, 233, 0.8);
+}
+
+.articles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.article-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: transform var(--transition-base);
+}
+
+.article-card:hover {
+  transform: translateY(-4px);
+}
+
+.article-card__image {
+  margin-bottom: 1rem;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.article-card__image img {
+  width: 100%;
+  height: auto;
+  transition: transform var(--transition-base);
+}
+
+.article-card:hover .article-card__image img {
+  transform: scale(1.05);
+}
+
+.article-card__content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 1rem;
+}
+
+.article-card__header {
+  margin-bottom: 1rem;
+}
+
+.article-card__title {
+  margin-bottom: 0.75rem;
+  font-size: 1.25rem;
+  line-height: 1.3;
+}
+
+.article-card__title a {
+  color: var(--color-pure-white);
+  text-decoration: none;
+}
+
+.article-card__title a:hover {
+  color: var(--color-golden-yellow);
+}
+
+.article-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.875rem;
+  color: rgba(247, 243, 233, 0.7);
+}
+
+.article-card__excerpt {
+  margin-bottom: 1rem;
+  color: rgba(247, 243, 233, 0.8);
+  line-height: 1.6;
+  flex: 1;
+}
+
+.article-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.article-tag {
+  background: rgba(246, 213, 92, 0.1);
+  color: var(--color-golden-yellow);
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.article-card__footer {
+  margin-top: auto;
+}
+
+.pagination {
+  margin-top: 3rem;
+}
+
+.pagination__list {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.pagination__link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(247, 243, 233, 0.3);
+  border-radius: var(--radius-sm);
+  color: var(--color-warm-cream);
+  text-decoration: none;
+  transition: all var(--transition-base);
+  min-width: 44px;
+  justify-content: center;
+}
+
+.pagination__link:hover {
+  border-color: var(--color-golden-yellow);
+  background: rgba(246, 213, 92, 0.1);
+}
+
+.pagination__link--current {
+  background: var(--color-golden-yellow);
+  color: var(--color-midnight-navy);
+  border-color: var(--color-golden-yellow);
+}
+
+.pagination__ellipsis {
+  padding: 0.75rem 0.5rem;
+  color: rgba(247, 243, 233, 0.5);
+}
+
+.empty-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+}
+
+.empty-state__content {
+  text-align: center;
+  max-width: 500px;
+  padding: 3rem;
+}
+
+@media (max-width: 768px) {
+  .articles-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .article-card__meta {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .pagination__link {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+}
+</style>
